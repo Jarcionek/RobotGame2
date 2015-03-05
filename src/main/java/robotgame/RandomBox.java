@@ -1,3 +1,5 @@
+package robotgame;
+
 import java.util.Random;
 /**
  * This class helps choosing randomly a string with given probability. Firstly you have to choose how many elements you want to have in your set of strings (proposed 100). Then you load strings with probability assigned to them. What is important, real chance is equal given chance devided by number of elements.

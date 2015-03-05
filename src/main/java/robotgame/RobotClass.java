@@ -1,3 +1,5 @@
+package robotgame;
+
 /**
  * Robot has its name, position and direction which can be change by commands (from commands list) or instantly (when e.g. naming a robot or deleting robot from the map). Robot also has its statistics such as health and action points, speed, endurance and attack.
  * @author Jaroslaw Pawlak

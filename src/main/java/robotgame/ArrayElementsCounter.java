@@ -1,3 +1,5 @@
+package robotgame;
+
 /**
  * This class takes array of strings and counts how many its elements differ from null. USED IN RANDOM BOX!!!
  * @author Jarcionek

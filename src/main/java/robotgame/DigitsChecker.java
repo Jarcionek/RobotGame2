@@ -1,3 +1,5 @@
+package robotgame;
+
 /**
  * DigitsChecker takes a string and gives information if it contains only digits or not.
  * If there are only digits in given input, converts it into integer and compares with given minimum and maximum value.

@@ -1,3 +1,5 @@
+package robotgame;
+
 /**
  * Stores informations of robots for easy print. Each robot has to be loaded manually.
  * @author Jaroslaw Pawlak

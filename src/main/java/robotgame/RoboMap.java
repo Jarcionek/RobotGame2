@@ -1,3 +1,5 @@
+package robotgame;
+
 /**
  * Class RoboMap creates map made of chars for RobotGame. Chars are stored in a defined array and can be changed manually. Cooperate with Robot class. Position (0;0) is printed as a bottom left hand corner.
  * @author Jaroslaw Pawlak
