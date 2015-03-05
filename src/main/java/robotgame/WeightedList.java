@@ -1,34 +1,41 @@
 package robotgame;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class WeightedList {
 
     private final Random random;
-    private final String array[];
 
-    public WeightedList(int numberOfElements, Random random) {
+    private final List<String> elements = new ArrayList<>();
+    private final List<Integer> weights = new ArrayList<>();
+
+    public WeightedList(Random random) {
         this.random = random;
-        array = new String[numberOfElements];
     }
 
     public void add(int weight, String element) {
-        ArrayElementsCounter arrayElementsCounter = new ArrayElementsCounter();
-        arrayElementsCounter.load(array);
-        int i = 0;
-        if (weight <= 100 - arrayElementsCounter.getNumberOfNonNulls()) {
-            i = weight;
-        }
-        for (int k = 0; i > 0; k++) {
-            if (array[k] == null) {
-                array[k] = element;
-                i--;
-            }
-        }
+        elements.add(element);
+        weights.add(weight);
     }
 
     public String getRandom() {
-        return array[random.nextInt(array.length)];
+        int randomValue = randomValueBetweenZeroAndTotalWeight();
+
+        int totalWeight = 0;
+        for (int i = 0; i < weights.size(); i++) {
+            totalWeight += weights.get(i);
+            if (randomValue < totalWeight) {
+                return elements.get(i);
+            }
+        }
+
+        throw new IllegalStateException("should never happen");
+    }
+
+    private int randomValueBetweenZeroAndTotalWeight() {
+        return random.nextInt(weights.stream().mapToInt(e -> e).sum());
     }
 
 }

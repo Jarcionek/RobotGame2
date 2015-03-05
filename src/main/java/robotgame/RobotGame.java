@@ -23,7 +23,7 @@ public class RobotGame {
     private static boolean displayMap = true;
 
     //BONUSES
-    private static WeightedList Bonus = new WeightedList(100, new Random());
+    private static WeightedList Bonus = new WeightedList(new Random());
     /**
      * Percentile chance that at the beginning of player's turn, the bonus will appear.
      */

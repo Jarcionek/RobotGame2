@@ -14,9 +14,11 @@ public class WeightedListTest {
 
     private final Random random = mock(Random.class);
 
+    private final WeightedList weightedList = new WeightedList(random);
+
     @Test
-    public void returnsRandomElement() {
-        WeightedList weightedList = new WeightedList(100, random);
+    public void returnsRandomElementWhenTotalWeightIsOneHundred() {
+        when(random.nextInt(100)).thenReturn(5, 99);
 
         weightedList.add(15, "02AP");
         weightedList.add(8, "03AP");
@@ -39,12 +41,45 @@ public class WeightedListTest {
         weightedList.add(4, "02attack");
         weightedList.add(3, "03attack");
         weightedList.add(1, "05attack");
+        String firstRandomElement = weightedList.getRandom();
+        String secondRandomElement = weightedList.getRandom();
 
-        when(random.nextInt(100)).thenReturn(5);
-        assertThat(weightedList.getRandom(), is(equalTo("02AP")));
+        assertThat(firstRandomElement, is(equalTo("02AP")));
+        assertThat(secondRandomElement, is(equalTo("05attack")));
+    }
 
-        when(random.nextInt(100)).thenReturn(99);
-        assertThat(weightedList.getRandom(), is(equalTo("05attack")));
+    @Test
+    public void returnsRandomElementWhenTotalWeightBelowOneHundred() {
+        when(random.nextInt(14)).thenReturn(3);
+
+        weightedList.add(14, "a");
+        String randomElement = weightedList.getRandom();
+
+        assertThat(randomElement, is(equalTo("a")));
+    }
+
+    @Test
+    public void returnsRandomElementWhenTotalWeightAboveOneHundred() {
+        when(random.nextInt(150)).thenReturn(140);
+
+        weightedList.add(120, "a");
+        weightedList.add(30, "b");
+        String randomElement = weightedList.getRandom();
+
+        assertThat(randomElement, is(equalTo("b")));
+    }
+
+    @Test
+    public void returnsRandomElementsWhenWeightIsOne() {
+        when(random.nextInt(2)).thenReturn(0, 1);
+
+        weightedList.add(1, "a");
+        weightedList.add(1, "b");
+        String firstRandomElement = weightedList.getRandom();
+        String secondRandomElement = weightedList.getRandom();
+
+        assertThat(firstRandomElement, is(equalTo("a")));
+        assertThat(secondRandomElement, is(equalTo("b")));
     }
 
 }
