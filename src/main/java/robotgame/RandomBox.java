@@ -2,21 +2,14 @@ package robotgame;
 
 import java.util.Random;
 
-/**
- * This class helps choosing randomly a string with given probability. Firstly you have to choose how many elements you want to have in your set of strings (proposed 100). Then you load strings with probability assigned to them. What is important, real chance is equal given chance devided by number of elements.
- *
- * @author Jaroslaw Pawlak
- */
 public class RandomBox {
-    private String random[];
 
-    /**
-     * Constructs RandomBox with given maximum number of strings.
-     *
-     * @param numberOfElements maximum number of strings
-     */
-    public RandomBox(int numberOfElements) {
-        random = new String[numberOfElements];
+    private final Random random;
+    private final String array[];
+
+    public RandomBox(int numberOfElements, Random random) {
+        this.random = random;
+        array = new String[numberOfElements];
     }
 
     /**
@@ -31,17 +24,17 @@ public class RandomBox {
      * @param name   any string
      */
     public void addString(int chance, String name) {
-        ArrayElementsCounter Counter = new ArrayElementsCounter();
-        Counter.load(random);
+        ArrayElementsCounter arrayElementsCounter = new ArrayElementsCounter();
+        arrayElementsCounter.load(array);
         int i = 0;
-        if (chance > 100 - Counter.getNumberOfNonNulls()) {
-            i = 100 - Counter.getNumberOfNonNulls();
+        if (chance > 100 - arrayElementsCounter.getNumberOfNonNulls()) {
+            i = 100 - arrayElementsCounter.getNumberOfNonNulls();
         } else {
             i = chance;
         }
         for (int k = 0; i > 0; k++) {
-            if (random[k] == null) {
-                random[k] = name;
+            if (array[k] == null) {
+                array[k] = name;
                 i--;
             }
         }
@@ -53,7 +46,6 @@ public class RandomBox {
      * @return randomly chosen string from set of given strings
      */
     public String randomize() {
-        Random choose = new Random();
-        return random[choose.nextInt(random.length)];
+        return array[random.nextInt(array.length)];
     }
 }

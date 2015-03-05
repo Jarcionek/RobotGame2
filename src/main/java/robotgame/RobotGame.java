@@ -23,7 +23,7 @@ public class RobotGame {
     private static boolean displayMap = true;
 
     //BONUSES
-    private static RandomBox Bonus = new RandomBox(100);
+    private static RandomBox Bonus = new RandomBox(100, new Random());
     /**
      * Percentile chance that at the beginning of player's turn, the bonus will appear.
      */
