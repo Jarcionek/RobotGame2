@@ -23,7 +23,7 @@ public class RobotGame {
     private static boolean displayMap = true;
 
     //BONUSES
-    private static RandomBox Bonus = new RandomBox(100, new Random());
+    private static WeightedList Bonus = new WeightedList(100, new Random());
     /**
      * Percentile chance that at the beginning of player's turn, the bonus will appear.
      */
@@ -297,27 +297,27 @@ public class RobotGame {
     }
 
     private static void declareBonuses() {
-        Bonus.addString(15, "02AP");
-        Bonus.addString(8, "03AP");
-        Bonus.addString(5, "05AP");
-        Bonus.addString(1, "10AP");
-        Bonus.addString(15, "05HP");
-        Bonus.addString(8, "10HP");
-        Bonus.addString(5, "15HP");
-        Bonus.addString(3, "20HP");
-        Bonus.addString(1, "80HP");
-        Bonus.addString(5, "01endurance");
-        Bonus.addString(4, "02endurance");
-        Bonus.addString(3, "03endurance");
-        Bonus.addString(1, "05endurance");
-        Bonus.addString(5, "01speed");
-        Bonus.addString(4, "02speed");
-        Bonus.addString(3, "03speed");
-        Bonus.addString(1, "05speed");
-        Bonus.addString(5, "01attack");
-        Bonus.addString(4, "02attack");
-        Bonus.addString(3, "03attack");
-        Bonus.addString(1, "05attack");
+        Bonus.add(15, "02AP");
+        Bonus.add(8, "03AP");
+        Bonus.add(5, "05AP");
+        Bonus.add(1, "10AP");
+        Bonus.add(15, "05HP");
+        Bonus.add(8, "10HP");
+        Bonus.add(5, "15HP");
+        Bonus.add(3, "20HP");
+        Bonus.add(1, "80HP");
+        Bonus.add(5, "01endurance");
+        Bonus.add(4, "02endurance");
+        Bonus.add(3, "03endurance");
+        Bonus.add(1, "05endurance");
+        Bonus.add(5, "01speed");
+        Bonus.add(4, "02speed");
+        Bonus.add(3, "03speed");
+        Bonus.add(1, "05speed");
+        Bonus.add(5, "01attack");
+        Bonus.add(4, "02attack");
+        Bonus.add(3, "03attack");
+        Bonus.add(1, "05attack");
     }
 
     //COMMANDS
@@ -336,7 +336,7 @@ public class RobotGame {
             numberOfBonusesOnTheMap--;
 
             String chosenBonus = "";
-            chosenBonus = Bonus.randomize();
+            chosenBonus = Bonus.getRandom();
             int amount = Integer.parseInt(chosenBonus.substring(0, 2));
             String skill = chosenBonus.substring(2);
 
