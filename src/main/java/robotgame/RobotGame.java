@@ -23,7 +23,7 @@ public class RobotGame {
     private static boolean displayMap = true;
 
     //BONUSES
-    private static WeightedList Bonus = new WeightedList(new Random());
+    private static WeightedList<String> bonuses = new WeightedList<>(new Random());
     /**
      * Percentile chance that at the beginning of player's turn, the bonus will appear.
      */
@@ -297,27 +297,27 @@ public class RobotGame {
     }
 
     private static void declareBonuses() {
-        Bonus.add(15, "02AP");
-        Bonus.add(8, "03AP");
-        Bonus.add(5, "05AP");
-        Bonus.add(1, "10AP");
-        Bonus.add(15, "05HP");
-        Bonus.add(8, "10HP");
-        Bonus.add(5, "15HP");
-        Bonus.add(3, "20HP");
-        Bonus.add(1, "80HP");
-        Bonus.add(5, "01endurance");
-        Bonus.add(4, "02endurance");
-        Bonus.add(3, "03endurance");
-        Bonus.add(1, "05endurance");
-        Bonus.add(5, "01speed");
-        Bonus.add(4, "02speed");
-        Bonus.add(3, "03speed");
-        Bonus.add(1, "05speed");
-        Bonus.add(5, "01attack");
-        Bonus.add(4, "02attack");
-        Bonus.add(3, "03attack");
-        Bonus.add(1, "05attack");
+        bonuses.add(15, "02AP");
+        bonuses.add(8, "03AP");
+        bonuses.add(5, "05AP");
+        bonuses.add(1, "10AP");
+        bonuses.add(15, "05HP");
+        bonuses.add(8, "10HP");
+        bonuses.add(5, "15HP");
+        bonuses.add(3, "20HP");
+        bonuses.add(1, "80HP");
+        bonuses.add(5, "01endurance");
+        bonuses.add(4, "02endurance");
+        bonuses.add(3, "03endurance");
+        bonuses.add(1, "05endurance");
+        bonuses.add(5, "01speed");
+        bonuses.add(4, "02speed");
+        bonuses.add(3, "03speed");
+        bonuses.add(1, "05speed");
+        bonuses.add(5, "01attack");
+        bonuses.add(4, "02attack");
+        bonuses.add(3, "03attack");
+        bonuses.add(1, "05attack");
     }
 
     //COMMANDS
@@ -336,7 +336,7 @@ public class RobotGame {
             numberOfBonusesOnTheMap--;
 
             String chosenBonus = "";
-            chosenBonus = Bonus.getRandom();
+            chosenBonus = bonuses.getRandom();
             int amount = Integer.parseInt(chosenBonus.substring(0, 2));
             String skill = chosenBonus.substring(2);
 

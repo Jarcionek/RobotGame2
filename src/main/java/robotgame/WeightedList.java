@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class WeightedList {
+public class WeightedList<E> {
 
     private final Random random;
 
-    private final List<String> elements = new ArrayList<>();
+    private final List<E> elements = new ArrayList<>();
     private final List<Integer> weights = new ArrayList<>();
 
     public WeightedList(Random random) {
         this.random = random;
     }
 
-    public void add(int weight, String element) {
+    public void add(int weight, E element) {
         elements.add(element);
         weights.add(weight);
     }
 
-    public String getRandom() {
+    public E getRandom() {
         int randomValue = randomValueBetweenZeroAndTotalWeight();
 
         int totalWeight = 0;

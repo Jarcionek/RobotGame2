@@ -14,7 +14,7 @@ public class WeightedListTest {
 
     private final Random random = mock(Random.class);
 
-    private final WeightedList weightedList = new WeightedList(random);
+    private final WeightedList<String> weightedList = new WeightedList<>(random);
 
     @Test
     public void returnsRandomElementWhenTotalWeightIsOneHundred() {
