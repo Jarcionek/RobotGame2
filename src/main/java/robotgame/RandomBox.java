@@ -34,8 +34,8 @@ public class RandomBox {
         ArrayElementsCounter Counter = new ArrayElementsCounter();
         Counter.load(random);
         int i = 0;
-        if (chance > 100 - Counter.CountElements()) {
-            i = 100 - Counter.CountElements();
+        if (chance > 100 - Counter.getNumberOfNonNulls()) {
+            i = 100 - Counter.getNumberOfNonNulls();
         } else {
             i = chance;
         }
