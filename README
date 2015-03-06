@@ -1,1 +1,20 @@
-My first larger program written after about 6 weeks of learning programming. Nothing worth describing. It uses terminal only.
+This was the first larger program I wrote - after 6 weeks of learning programming.
+Now used as an exercise to practice refactoring legacy code.
+
+The main goals are:
+- add tests for the program (currently there are no tests at all)
+- isolate business logic from user interface
+- replace javadocs with "documentation by tests"
+- fix violations of single responsibility principle
+- split large classes into smaller ones using dependency injection
+- fix formatting, spelling and all violations of code conventions (such as naming and incorrect white spaces)
+- clean the code, make it easy to read and understand it
+
+Once done, it should be easy to implement new features such as:
+- new attributes
+- new bonuses
+- new commands
+- perks (special commands available only to player with that perk)
+- collecting and equipping items
+- better graphics
+
