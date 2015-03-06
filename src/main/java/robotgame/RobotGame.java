@@ -4,19 +4,19 @@ import com.google.common.annotations.VisibleForTesting;
 
 import java.io.PrintStream;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * @author Jaroslaw Pawlak
  */
 public class RobotGame {
 
-    @VisibleForTesting public static Scanner scanner = new Scanner(System.in);
+    @VisibleForTesting public static InputReader scanner = new InputReader();
     @VisibleForTesting public static PrintStream outputStream = System.out;
     @VisibleForTesting public static PopUp popUp = new PopUp();
     @VisibleForTesting public static Random weightedListRandom = new Random();
     @VisibleForTesting public static Random bonusRandom = new Random();
     @VisibleForTesting public static Random playerOrderRandom = new Random();
+    @VisibleForTesting public static ProgramTerminator programTerminator = new ProgramTerminator();
 
     private static int numberOfPlayers = 0;
     private static DigitsChecker checkInput = new DigitsChecker();
@@ -427,7 +427,7 @@ public class RobotGame {
                                 if (Robot[k].getHP() > 0) {
                                     outputStream.print("\n");
                                     popUp.show(Robot[k].getName().toUpperCase() + " IS A WINNER!", "VICTORY");
-                                    System.exit(0); //finish game
+                                    programTerminator.exit(); //finish game
                                 }
                             } //end find that player's number
                         } //end if there is only one player remaining
