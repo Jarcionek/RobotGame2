@@ -1,55 +1,29 @@
 package robotgame;
 
-/**
- * Robot has its name, position and direction which can be change by commands (from commands list) or instantly (when e.g. naming a robot or deleting robot from the map). Robot also has its statistics such as health and action points, speed, endurance and attack.
- *
- * @author Jaroslaw Pawlak
- */
 public class RobotClass {
-    private String name;
-    private int X = 0;
-    private int Y = 0;
-    private int direction = 1; // 1 - up/north, 2 - right/east, 3 - down/south, 4 - left/west
-    private int AP = 0; //action points
-    private int endurance = 3;
+
     /**
      * multiplier = max hp / endurance, use it to define max hp
      */
     public static final int MULTIPLIER = 2;
-    private int HP = endurance * MULTIPLIER; //health points
-    private String commands[] = {"skip", "move", "m", "left", "l", "right", "r", "hit", "h", "attack", "a", "scan", "s", "help", "?"};
+    private static final String COMMANDS[] = {"skip", "move", "m", "left", "l", "right", "r", "hit", "h", "attack", "a", "scan", "s", "help", "?"};
+
+    private final String name;
+
+    private int x = 0;
+    private int y = 0;
+    private int direction = 1; // 1 - up/north, 2 - right/east, 3 - down/south, 4 - left/west
+
+    private int endurance = 3;
     private int speed = 5;
     private int attack = 1;
+
     private int skillPoints = 5;
+    private int ap = 0; // action points
+    private int hp = endurance * MULTIPLIER; // health points
 
-    /**
-     * Constructs a robot with given name, position and direction.
-     *
-     * @param in_name      robot's name
-     * @param in_X         X coordinate
-     * @param in_Y         Y coordinate
-     * @param in_direction direction: 1=north, 2=east, 3=south, 4=west
-     */
-    public RobotClass(String in_name, int in_X, int in_Y, int in_direction) {
-        name = in_name;
-        X = in_X;
-        Y = in_Y;
-        direction = in_direction;
-    }
-
-    /**
-     * Constructs a robot with given name, position (0;0) and facing north.
-     *
-     * @param in_name robot's name
-     */
-    public RobotClass(String in_name) {
-        name = in_name;
-    }
-
-    /**
-     * Constructs a robot with no name, position (0;0) and facing north.
-     */
-    public RobotClass() {
+    public RobotClass(String name) {
+        this.name = name;
     }
 
     /**
@@ -60,27 +34,9 @@ public class RobotClass {
      * @param in_direction direction: 1=north, 2=east, 3=south, 4=west
      */
     public void place(int in_X, int in_Y, int in_direction) {
-        X = in_X;
-        Y = in_Y;
+        x = in_X;
+        y = in_Y;
         direction = in_direction;
-    }
-
-    /**
-     * Changes robot's name.
-     *
-     * @param newName robot's new name
-     */
-    public void changeName(String newName) {
-        name = newName;
-    }
-
-    /**
-     * Changes robot's direction. (1 - north, 2 - east, 3 - south, 4 - west)
-     *
-     * @param newDirection robot's new direction
-     */
-    public void changeDirection(int newDirection) {
-        direction = newDirection;
     }
 
     /**
@@ -106,30 +62,25 @@ public class RobotClass {
      */
     public void moveForward(int amount) {
         if (direction == 1) {
-            Y += amount;
+            y += amount;
         } else if (direction == 2) {
-            X += amount;
+            x += amount;
         } else if (direction == 3) {
-            Y -= amount;
+            y -= amount;
         } else if (direction == 4) {
-            X -= amount;
+            x -= amount;
         }
     }
 
-    /**
-     * Commands robot to send its current position and facing direction as a string, e.g. "(7;-2) faces east".
-     *
-     * @return robot's postion and direction
-     */
-    public String sendPosition() {
+    public String getPositionAsString() {
         if (direction == 1) {
-            return "(" + X + ";" + Y + ") faces north";
+            return "(" + x + ";" + y + ") faces north";
         } else if (direction == 2) {
-            return "(" + X + ";" + Y + ") faces east";
+            return "(" + x + ";" + y + ") faces east";
         } else if (direction == 3) {
-            return "(" + X + ";" + Y + ") faces south";
+            return "(" + x + ";" + y + ") faces south";
         } else {
-            return "(" + X + ";" + Y + ") faces west";
+            return "(" + x + ";" + y + ") faces west";
         }
     }
 
@@ -139,7 +90,7 @@ public class RobotClass {
      * @return X coordinate
      */
     public int getX() {
-        return X;
+        return x;
     }
 
     /**
@@ -148,16 +99,7 @@ public class RobotClass {
      * @return Y coordinate
      */
     public int getY() {
-        return Y;
-    }
-
-    /**
-     * Commands robot to send its current direction: 1=north, 2=east, 3=south, 4=west
-     *
-     * @return direction
-     */
-    public int sendDirection() {
-        return direction;
+        return y;
     }
 
     /**
@@ -175,11 +117,11 @@ public class RobotClass {
      * @param addHP amount to add
      */
     public void changeHP(int addHP) {
-        HP += addHP;
-        if (HP > MULTIPLIER * endurance) {
-            HP = MULTIPLIER * endurance;
-        } else if (HP < 0) {
-            HP = 0;
+        hp += addHP;
+        if (hp > MULTIPLIER * endurance) {
+            hp = MULTIPLIER * endurance;
+        } else if (hp < 0) {
+            hp = 0;
         }
     }
 
@@ -189,7 +131,7 @@ public class RobotClass {
      * @return robot's current health points
      */
     public int getHP() {
-        return HP;
+        return hp;
     }
 
     /**
@@ -216,7 +158,7 @@ public class RobotClass {
      * @param addAP amount to add
      */
     public void changeAP(int addAP) {
-        AP += addAP;
+        ap += addAP;
     }
 
     /**
@@ -225,7 +167,7 @@ public class RobotClass {
      * @return robot's current action points
      */
     public int getAP() {
-        return AP;
+        return ap;
     }
 
     /**
@@ -235,11 +177,11 @@ public class RobotClass {
      */
     public int getFrontX() {
         if (direction == 2) {
-            return X + 1;
+            return x + 1;
         } else if (direction == 4) {
-            return X - 1;
+            return x - 1;
         } else {
-            return X;
+            return x;
         }
     }
 
@@ -250,11 +192,11 @@ public class RobotClass {
      */
     public int getFrontY() {
         if (direction == 1) {
-            return Y + 1;
+            return y + 1;
         } else if (direction == 3) {
-            return Y - 1;
+            return y - 1;
         } else {
-            return Y;
+            return y;
         }
     }
 
@@ -265,8 +207,8 @@ public class RobotClass {
      * @return false if robot understands command, true if not understand it
      */
     public boolean unknownCommand(String command) {
-        for (int i = 0; i < commands.length; i++) {
-            if (command.toLowerCase().equals(commands[i])) {
+        for (int i = 0; i < COMMANDS.length; i++) {
+            if (command.toLowerCase().equals(COMMANDS[i])) {
                 return false;
             }
         }
@@ -281,9 +223,9 @@ public class RobotClass {
     public String knownCommands() {
         String result = "";
 
-        for (int i = 0; i < commands.length; i++) {
-            if (commands[i] != null) {
-                result += commands[i] + ", ";
+        for (int i = 0; i < COMMANDS.length; i++) {
+            if (COMMANDS[i] != null) {
+                result += COMMANDS[i] + ", ";
             }
         }
 

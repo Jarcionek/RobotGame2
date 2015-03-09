@@ -35,7 +35,7 @@ public class PlayersInfo {
         } else {
             infoArray[i - 1] = (i - 1) + " - ";
             infoArray[i - 1] += robotName.getName() + ": ";
-            infoArray[i - 1] += robotName.sendPosition() + ", ";
+            infoArray[i - 1] += robotName.getPositionAsString() + ", ";
             infoArray[i - 1] += robotName.getHP() + " HP, ";
             infoArray[i - 1] += robotName.getEndurance() + " endurance, ";
             infoArray[i - 1] += robotName.getSpeed() + " speed, ";

@@ -130,8 +130,7 @@ public class RobotGame {
 
             } while (repeatedName);
 
-            Robot[i] = new RobotClass();
-            Robot[i].changeName(name);
+            Robot[i] = new RobotClass(name);
         }
     }
 
@@ -558,7 +557,7 @@ public class RobotGame {
                             map.loadRobot(Robot[order[i]], RoboMap.ROBOT_SYMBOL);
 
                             outputPrinter.println(Robot[order[i]].getName() + "'s turn. " + Robot[order[i]].getHP() + " HP");
-                            outputPrinter.println("Current position: " + Robot[order[i]].sendPosition());
+                            outputPrinter.println("Current position: " + Robot[order[i]].getPositionAsString());
                             outputPrinter.println(Robot[order[i]].getAP() + " AP left.");
                         } //end map and info printer
 
