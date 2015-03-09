@@ -5,13 +5,13 @@ import java.util.List;
 
 public class WeightedList<E> {
 
-    private final RandomNumberGenerator random;
+    private final RandomNumberGenerator randomNumberGenerator;
 
     private final List<E> elements = new ArrayList<>();
     private final List<Integer> weights = new ArrayList<>();
 
-    public WeightedList(RandomNumberGenerator random) {
-        this.random = random;
+    public WeightedList(RandomNumberGenerator randomNumberGenerator) {
+        this.randomNumberGenerator = randomNumberGenerator;
     }
 
     public void add(int weight, E element) {
@@ -34,7 +34,7 @@ public class WeightedList<E> {
     }
 
     private int randomValueBetweenZeroAndTotalWeight() {
-        return random.nextInt(weights.stream().mapToInt(e -> e).sum());
+        return randomNumberGenerator.nextInt(weights.stream().mapToInt(e -> e).sum());
     }
 
 }
