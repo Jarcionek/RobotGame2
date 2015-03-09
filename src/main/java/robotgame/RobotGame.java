@@ -2,20 +2,14 @@ package robotgame;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import java.io.PrintStream;
-import java.util.Random;
-
-/**
- * @author Jaroslaw Pawlak
- */
 public class RobotGame {
 
     @VisibleForTesting public static InputReader scanner = new InputReader();
-    @VisibleForTesting public static PrintStream outputStream = System.out;
+    @VisibleForTesting public static OutputPrinter outputStream = new OutputPrinter();
     @VisibleForTesting public static PopUp popUp = new PopUp();
-    @VisibleForTesting public static Random weightedListRandom = new Random();
-    @VisibleForTesting public static Random bonusRandom = new Random();
-    @VisibleForTesting public static Random playerOrderRandom = new Random();
+    @VisibleForTesting public static RandomNumberGenerator weightedListRandom = new RandomNumberGenerator();
+    @VisibleForTesting public static RandomNumberGenerator bonusRandom = new RandomNumberGenerator();
+    @VisibleForTesting public static RandomNumberGenerator playerOrderRandom = new RandomNumberGenerator();
     @VisibleForTesting public static ProgramTerminator programTerminator = new ProgramTerminator();
 
     private static int numberOfPlayers = 0;

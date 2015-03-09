@@ -2,8 +2,6 @@ package robotgame;
 
 import org.junit.Test;
 
-import java.util.Random;
-
 import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -12,7 +10,7 @@ import static org.mockito.Mockito.when;
 
 public class WeightedListTest {
 
-    private final Random random = mock(Random.class);
+    private final RandomNumberGenerator random = mock(RandomNumberGenerator.class);
 
     private final WeightedList<String> weightedList = new WeightedList<>(random);
 

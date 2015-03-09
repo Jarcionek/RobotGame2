@@ -3,9 +3,6 @@ package robotgame;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.PrintStream;
-import java.util.Random;
-
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,11 +12,11 @@ public class RobotGameAcceptanceTest {
     @Before
     public void injectDependencies() {
         RobotGame.scanner = mock(InputReader.class);
-        RobotGame.outputStream = mock(PrintStream.class);
+        RobotGame.outputStream = mock(OutputPrinter.class);
         RobotGame.popUp = mock(PopUp.class);
-        RobotGame.weightedListRandom = new Random();
-        RobotGame.bonusRandom = new Random();
-        RobotGame.playerOrderRandom =  new Random();
+        RobotGame.weightedListRandom = new RandomNumberGenerator();
+        RobotGame.bonusRandom = new RandomNumberGenerator();
+        RobotGame.playerOrderRandom = new RandomNumberGenerator();
         RobotGame.programTerminator = mock(ProgramTerminator.class);
     }
 

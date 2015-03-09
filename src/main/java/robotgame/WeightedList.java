@@ -2,16 +2,15 @@ package robotgame;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class WeightedList<E> {
 
-    private final Random random;
+    private final RandomNumberGenerator random;
 
     private final List<E> elements = new ArrayList<>();
     private final List<Integer> weights = new ArrayList<>();
 
-    public WeightedList(Random random) {
+    public WeightedList(RandomNumberGenerator random) {
         this.random = random;
     }
 
