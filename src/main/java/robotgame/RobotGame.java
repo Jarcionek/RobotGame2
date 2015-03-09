@@ -237,7 +237,7 @@ public class RobotGame {
             do { //get X and Y
                 alreadyUsed = false; //postion already used by another player
 
-                outputPrinter.print(map.print());
+                outputPrinter.print(map.asString());
 
                 do {
                     outputPrinter.print("Enter " + Robot[order[i]].getName() + "'s X coordinate: ");
@@ -419,7 +419,7 @@ public class RobotGame {
                         Robot[find].place(0, 0, 1); //remove from map
 
                         map.loadRobot(name, RoboMap.ACTIVE_ROBOT_SYMBOL);
-                        outputPrinter.println(map.print().substring(0, map.print().length() - 1));
+                        outputPrinter.println(map.asString().substring(0, map.asString().length() - 1));
                         map.loadRobot(name, RoboMap.ROBOT_SYMBOL);
 
                         outputPrinter.print("Your robot kills " + Robot[find].getName() + ". ");
@@ -469,7 +469,7 @@ public class RobotGame {
             map.loadRobot(Robot[order[no]], (char) no + 47); //0's code is 48
         }
 
-        outputPrinter.print(map.print()); //prints map with robots represented as digits
+        outputPrinter.print(map.asString()); //prints map with robots represented as digits
 
         for (int no = 1; no <= numberOfPlayers; no++) { //representes all robots as inactives robots
             map.loadRobot(Robot[no], RoboMap.ROBOT_SYMBOL);
@@ -550,7 +550,7 @@ public class RobotGame {
                         if (!unknownCommand && displayMap) { //don't print map and information about position and AP left when unknown or unreachable command
                             map.loadRobot(Robot[order[i]], RoboMap.ACTIVE_ROBOT_SYMBOL);
 
-                            outputPrinter.print(map.print());
+                            outputPrinter.print(map.asString());
 
                             map.loadRobot(Robot[order[i]], RoboMap.ROBOT_SYMBOL);
 

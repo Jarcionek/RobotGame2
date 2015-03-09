@@ -49,12 +49,7 @@ public class RoboMap {
 
     }
 
-    /**
-     * Prints a map as a string. Use print method instead of println to avoid blank line.
-     *
-     * @return map as a string
-     */
-    public String print() {
+    public String asString() {
         String result = "";
 
         for (int y = Y - 1; y >= 0; y--) {
@@ -104,17 +99,6 @@ public class RoboMap {
     }
 
     /**
-     * Changes symbol on the map in the given position. REMINDER: 183 - dot, 215 - cross.
-     *
-     * @param x         x coordinate
-     * @param y         y coordinate
-     * @param newSymbol new symbol given as an int (automaticaly converted into char)
-     */
-    public void changeBox(int x, int y, int newSymbol) {
-        map[x][y] = (char) newSymbol;
-    }
-
-    /**
      * Returns the symbol at given location.
      *
      * @param x x coordinate
@@ -126,16 +110,6 @@ public class RoboMap {
     }
 
     /**
-     * Returns the symbol at location where given robot currently is.
-     *
-     * @param robotName robot to take position from
-     * @return the symbol at given robot's position
-     */
-    public char getBox(RobotClass robotName) {
-        return map[robotName.getX()][robotName.getY()];
-    }
-
-    /**
      * Returns the symbol from the box in front of given robot.
      *
      * @param robotName robot name
@@ -144,4 +118,5 @@ public class RoboMap {
     public char getBoxInFrontOf(RobotClass robotName) {
         return map[robotName.getFrontX()][robotName.getFrontY()];
     }
+
 }
