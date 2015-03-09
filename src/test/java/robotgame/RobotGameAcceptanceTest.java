@@ -8,22 +8,22 @@ import static org.mockito.Mockito.when;
 
 public class RobotGameAcceptanceTest {
 
-    private final InputReader scanner = mock(InputReader.class);
-    private final OutputPrinter outputStream = mock(OutputPrinter.class);
+    private final InputReader inputReader = mock(InputReader.class);
+    private final OutputPrinter outputPrinter = mock(OutputPrinter.class);
     private final PopUp popUp = mock(PopUp.class);
-    private final RandomNumberGenerator weightedListRandom = new RandomNumberGenerator();
-    private final RandomNumberGenerator bonusRandom = new RandomNumberGenerator();
-    private final RandomNumberGenerator playerOrderRandom = new RandomNumberGenerator();
+    private final RandomNumberGenerator weightedListRandomNumberGenerator = new RandomNumberGenerator();
+    private final RandomNumberGenerator bonusRandomNumberGenerator = new RandomNumberGenerator();
+    private final RandomNumberGenerator playerOrderRandomNumberGenerator = new RandomNumberGenerator();
     private final ProgramTerminator programTerminator = mock(ProgramTerminator.class);
 
-    private final RobotGame robotGame = new RobotGame(scanner, outputStream, popUp, weightedListRandom, bonusRandom, playerOrderRandom, programTerminator);
+    private final RobotGame robotGame = new RobotGame(inputReader, outputPrinter, popUp, weightedListRandomNumberGenerator, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
 
     @Test
     public void canPlayVerySimpleGame() {
         // given
         doThrow(new TestPassed()).when(programTerminator).exit();
 
-        when(scanner.next())
+        when(inputReader.next())
                 .thenReturn("2") // number of players
                 .thenReturn("10") // width
                 .thenReturn("10") // height

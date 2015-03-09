@@ -2,30 +2,30 @@ package robotgame;
 
 public class RobotGame {
 
-    private final InputReader scanner;
-    private final OutputPrinter outputStream;
+    private final InputReader inputReader;
+    private final OutputPrinter outputPrinter;
     private final PopUp popUp;
-    private final RandomNumberGenerator weightedListRandom;
-    private final RandomNumberGenerator bonusRandom;
-    private final RandomNumberGenerator playerOrderRandom;
+    private final RandomNumberGenerator weightedListRandomNumberGenerator;
+    private final RandomNumberGenerator bonusRandomNumberGenerator;
+    private final RandomNumberGenerator playerOrderRandomNumberGenerator;
     private final ProgramTerminator programTerminator;
 
-    public RobotGame(InputReader scanner,
-                     OutputPrinter outputStream,
+    public RobotGame(InputReader inputReader,
+                     OutputPrinter outputPrinter,
                      PopUp popUp,
-                     RandomNumberGenerator weightedListRandom,
-                     RandomNumberGenerator bonusRandom,
-                     RandomNumberGenerator playerOrderRandom,
+                     RandomNumberGenerator weightedListRandomNumberGenerator,
+                     RandomNumberGenerator bonusRandomNumberGenerator,
+                     RandomNumberGenerator playerOrderRandomNumberGenerator,
                      ProgramTerminator programTerminator) {
-        this.scanner = scanner;
-        this.outputStream = outputStream;
+        this.inputReader = inputReader;
+        this.outputPrinter = outputPrinter;
         this.popUp = popUp;
-        this.weightedListRandom = weightedListRandom;
-        this.bonusRandom = bonusRandom;
-        this.playerOrderRandom = playerOrderRandom;
+        this.weightedListRandomNumberGenerator = weightedListRandomNumberGenerator;
+        this.bonusRandomNumberGenerator = bonusRandomNumberGenerator;
+        this.playerOrderRandomNumberGenerator = playerOrderRandomNumberGenerator;
         this.programTerminator = programTerminator;
 
-        this.bonuses = new WeightedList<>(weightedListRandom);
+        this.bonuses = new WeightedList<>(weightedListRandomNumberGenerator);
     }
 
     private int numberOfPlayers = 0;
@@ -55,14 +55,14 @@ public class RobotGame {
     //LOAD DATA FROM USER
     private void getNumberOfPlayers() {
         do {
-            outputStream.print("Enter the number of players: ");
-            String input = scanner.next();
+            outputPrinter.print("Enter the number of players: ");
+            String input = inputReader.next();
             checkInput.load(input, 1, 10);
 
             if (checkInput.containNoDigits()) {
-                outputStream.println("Incorrect value. Only digits are allowed.");
+                outputPrinter.println("Incorrect value. Only digits are allowed.");
             } else if (checkInput.outOfRange()) {
-                outputStream.println("At least one player is required. Maximum 10 players.");
+                outputPrinter.println("At least one player is required. Maximum 10 players.");
             } else {
                 numberOfPlayers = Integer.parseInt(input);
             }
@@ -72,14 +72,14 @@ public class RobotGame {
 
     private void getMapSize() {
         do {
-            outputStream.print("Enter map's width: ");
-            String input = scanner.next();
+            outputPrinter.print("Enter map's width: ");
+            String input = inputReader.next();
             checkInput.load(input, 10, MAP_MAX_WIDTH);
 
             if (checkInput.containNoDigits()) {
-                outputStream.println("Incorrect value. Only digits are allowed.");
+                outputPrinter.println("Incorrect value. Only digits are allowed.");
             } else if (checkInput.outOfRange()) {
-                outputStream.println("Map's width cannot be lower than 10 or bigger than " + MAP_MAX_WIDTH + ".");
+                outputPrinter.println("Map's width cannot be lower than 10 or bigger than " + MAP_MAX_WIDTH + ".");
             } else {
                 mapWidth = Integer.parseInt(input);
             }
@@ -88,14 +88,14 @@ public class RobotGame {
 
 
         do {
-            outputStream.print("Enter map's height: ");
-            String input = scanner.next();
+            outputPrinter.print("Enter map's height: ");
+            String input = inputReader.next();
             checkInput.load(input, 10, MAP_MAX_HEIGHT);
 
             if (checkInput.containNoDigits()) {
-                outputStream.println("Incorrect value. Only digits are allowed.");
+                outputPrinter.println("Incorrect value. Only digits are allowed.");
             } else if (checkInput.outOfRange()) {
-                outputStream.println("Map's height cannot be lower than 10 or bigger than " + MAP_MAX_HEIGHT + ".");
+                outputPrinter.println("Map's height cannot be lower than 10 or bigger than " + MAP_MAX_HEIGHT + ".");
             } else {
                 mapHeight = Integer.parseInt(input);
             }
@@ -113,14 +113,14 @@ public class RobotGame {
             boolean repeatedName = false;
 
             do {
-                outputStream.print("Enter " + i + ". robot's name: ");
-                name = scanner.next();
+                outputPrinter.print("Enter " + i + ". robot's name: ");
+                name = inputReader.next();
                 repeatedName = false;
 
                 for (int j = 1; j < i; j++) {
                     if (name.toLowerCase().equals(Robot[j].getName().toLowerCase())) {
                         repeatedName = true;
-                        outputStream.println("Another player has already chosen that name.");
+                        outputPrinter.println("Another player has already chosen that name.");
                         break;
                     }
                 }
@@ -141,8 +141,8 @@ public class RobotGame {
 
         for (int i = 0; i < numberOfPlayers * numberOfPlayers; i++) {
             int x;
-            int choiceOne = playerOrderRandom.nextInt(numberOfPlayers) + 1;
-            int choiceTwo = playerOrderRandom.nextInt(numberOfPlayers) + 1;
+            int choiceOne = playerOrderRandomNumberGenerator.nextInt(numberOfPlayers) + 1;
+            int choiceTwo = playerOrderRandomNumberGenerator.nextInt(numberOfPlayers) + 1;
             x = order[choiceOne];
             order[choiceOne] = order[choiceTwo];
             order[choiceTwo] = x;
@@ -151,10 +151,10 @@ public class RobotGame {
 
     private void allocateSkillPoints() {
         for (int i = 1; i <= numberOfPlayers; i++) {
-            outputStream.println("===================================");
-            outputStream.println("Allocate " + Robot[order[i]].getName() + "'s skill points.");
+            outputPrinter.println("===================================");
+            outputPrinter.println("Allocate " + Robot[order[i]].getName() + "'s skill points.");
             popUp.show("Allocate " + Robot[order[i]].getName() + "'s skill points.", "Allocate skill points");
-            outputStream.println("By default, each robot has 3 endurance, 5 speed and 1 attack.");
+            outputPrinter.println("By default, each robot has 3 endurance, 5 speed and 1 attack.");
             String possibilities[] = {"endurance", "e", "speed", "s", "attack", "a"};
 
             String result = "";
@@ -163,16 +163,16 @@ public class RobotGame {
             }
             result = result.substring(0, result.length() - 2);
 
-            outputStream.println("Each point added to endurance increases your HP by " + RobotClass.MULTIPLIER + " points.");
-            outputStream.println("Each point added to speed increases your AP by 1 point.");
-            outputStream.println("Each point added to attack increases dealing damages by 1 point.");
-            outputStream.println("Which skill you would like to add point to?");
-            outputStream.println("TIP: instead of writing entire skill name,\nyou can just write its first letter.");
+            outputPrinter.println("Each point added to endurance increases your HP by " + RobotClass.MULTIPLIER + " points.");
+            outputPrinter.println("Each point added to speed increases your AP by 1 point.");
+            outputPrinter.println("Each point added to attack increases dealing damages by 1 point.");
+            outputPrinter.println("Which skill you would like to add point to?");
+            outputPrinter.println("TIP: instead of writing entire skill name,\nyou can just write its first letter.");
             do {
                 boolean incorrect_input = true;
                 do {
-                    outputStream.println("You have " + Robot[order[i]].getSkillPoints() + " skill points to allocate.");
-                    String input = scanner.next();
+                    outputPrinter.println("You have " + Robot[order[i]].getSkillPoints() + " skill points to allocate.");
+                    String input = inputReader.next();
 
                     for (int j = 0; j < possibilities.length; j++) {
                         if (input.toLowerCase().equals(possibilities[j])) {
@@ -181,28 +181,28 @@ public class RobotGame {
                     }
 
                     if (incorrect_input) {
-                        outputStream.println("Incorrect skill.");
-                        outputStream.println("You can allocate skill points to the following skills: " + result);
+                        outputPrinter.println("Incorrect skill.");
+                        outputPrinter.println("You can allocate skill points to the following skills: " + result);
                     } else {
                         Robot[order[i]].changeSkillPoints(-1);
                         if (input.toLowerCase().equals("endurance") || input.toLowerCase().equals("e")) {
                             Robot[order[i]].changeEndurance(1);
-                            outputStream.println("Your endurance is " + Robot[order[i]].getEndurance() + " now.");
+                            outputPrinter.println("Your endurance is " + Robot[order[i]].getEndurance() + " now.");
                         } else if (input.toLowerCase().equals("speed") || input.toLowerCase().equals("s")) {
                             Robot[order[i]].changeSpeed(1);
-                            outputStream.println("Your speed is " + Robot[order[i]].getSpeed() + " now.");
+                            outputPrinter.println("Your speed is " + Robot[order[i]].getSpeed() + " now.");
                         } else if (input.toLowerCase().equals("attack") || input.toLowerCase().equals("a")) {
                             Robot[order[i]].changeAttack(1);
-                            outputStream.println("Your attack is " + Robot[order[i]].getAttack() + " now.");
+                            outputPrinter.println("Your attack is " + Robot[order[i]].getAttack() + " now.");
                         }
                     }
 
                 } while (incorrect_input);
             } while (Robot[order[i]].getSkillPoints() > 0);
-            String antiCheat = scanner.nextLine(); //suppose that player one has 5 free skill points, write "e e e e e e" and press enter - six "e" would cause automatically adding one point of next player to his endurance
+            String antiCheat = inputReader.nextLine(); //suppose that player one has 5 free skill points, write "e e e e e e" and press enter - six "e" would cause automatically adding one point of next player to his endurance
             Robot[order[i]].changeHP(RobotClass.MULTIPLIER * Robot[order[i]].getEndurance());
         }
-        outputStream.println("===================================");
+        outputPrinter.println("===================================");
     }
 
     /**
@@ -213,12 +213,12 @@ public class RobotGame {
      * @param chance percentile chance, if lower than 0 becomes 0, if higher than 100 becomes 100
      */
     private void randomizeBonus(int chance) {
-        if (FULNESS / 100.0 >= (double) numberOfBonusesOnTheMap / (mapWidth * mapHeight) && bonusRandom.nextInt(100) < chance) {
+        if (FULNESS / 100.0 >= (double) numberOfBonusesOnTheMap / (mapWidth * mapHeight) && bonusRandomNumberGenerator.nextInt(100) < chance) {
             int x;
             int y;
             do {
-                x = bonusRandom.nextInt(mapWidth) + 1;
-                y = bonusRandom.nextInt(mapHeight) + 1;
+                x = bonusRandomNumberGenerator.nextInt(mapWidth) + 1;
+                y = bonusRandomNumberGenerator.nextInt(mapHeight) + 1;
             } while (map.getBox(x, y) != RoboMap.EMPTY_FIELD_SYMBOL);
             map.changeBox(x, y, RoboMap.BONUS_SYMBOL);
             numberOfBonusesOnTheMap++;
@@ -237,17 +237,17 @@ public class RobotGame {
             do { //get X and Y
                 alreadyUsed = false; //postion already used by another player
 
-                outputStream.print(map.print());
+                outputPrinter.print(map.print());
 
                 do {
-                    outputStream.print("Enter " + Robot[order[i]].getName() + "'s X coordinate: ");
-                    String input = scanner.next();
+                    outputPrinter.print("Enter " + Robot[order[i]].getName() + "'s X coordinate: ");
+                    String input = inputReader.next();
                     checkInput.load(input, 1, mapWidth);
 
                     if (checkInput.containNoDigits()) {
-                        outputStream.println("Incorrect value. Only digits are allowed.");
+                        outputPrinter.println("Incorrect value. Only digits are allowed.");
                     } else if (checkInput.outOfRange()) {
-                        outputStream.println("Out of map.");
+                        outputPrinter.println("Out of map.");
                     } else {
                         X = Integer.parseInt(input);
                     }
@@ -255,14 +255,14 @@ public class RobotGame {
                 } while (checkInput.containNoDigits() || checkInput.outOfRange());
 
                 do {
-                    outputStream.print("Enter " + Robot[order[i]].getName() + "'s Y coordinate: ");
-                    String input = scanner.next();
+                    outputPrinter.print("Enter " + Robot[order[i]].getName() + "'s Y coordinate: ");
+                    String input = inputReader.next();
                     checkInput.load(input, 1, mapHeight);
 
                     if (checkInput.containNoDigits()) {
-                        outputStream.println("Incorrect value. Only digits are allowed.");
+                        outputPrinter.println("Incorrect value. Only digits are allowed.");
                     } else if (checkInput.outOfRange()) {
-                        outputStream.println("Out of map.");
+                        outputPrinter.println("Out of map.");
                     } else {
                         Y = Integer.parseInt(input);
                     }
@@ -273,7 +273,7 @@ public class RobotGame {
 
                 for (int find = 1; find < i; find++) { //if there is another robot with that position loaded
                     if (Robot[order[i]].getX() == Robot[order[find]].getX() && Robot[order[i]].getY() == Robot[order[find]].getY()) {
-                        outputStream.println("There is already another robot.");
+                        outputPrinter.println("There is already another robot.");
                         alreadyUsed = true;
                         break;
                     }
@@ -282,8 +282,8 @@ public class RobotGame {
             } while (alreadyUsed); //end get X and Y
 
             do { //get direction
-                outputStream.print("Enter " + Robot[order[i]].getName() + "'s facing direction: ");
-                String input = scanner.next().toLowerCase();
+                outputPrinter.print("Enter " + Robot[order[i]].getName() + "'s facing direction: ");
+                String input = inputReader.next().toLowerCase();
                 incorrect_direction = false;
 
                 if (input.equals("north") || input.equals("east") || input.equals("south") || input.equals("west") ||
@@ -300,13 +300,13 @@ public class RobotGame {
                         direction = 4;
                     }
                 } else {
-                    outputStream.println("Incorrect value. Your robot can only face north, east, south or west.");
+                    outputPrinter.println("Incorrect value. Your robot can only face north, east, south or west.");
                     incorrect_direction = true;
                 }
 
             } while (incorrect_direction); //end get direction
 
-            String antiCheat = scanner.nextLine();
+            String antiCheat = inputReader.nextLine();
             Robot[order[i]].place(X, Y, direction); //despite robot was created after taking X and Y, it was done without direction (assigned north)
             map.loadRobot(Robot[order[i]], RoboMap.ROBOT_SYMBOL); //load robot to the map
         }
@@ -358,32 +358,32 @@ public class RobotGame {
 
             if (skill.equals("AP")) { //what kind of bonus is it
                 name.changeAP(amount);
-                outputStream.println(amount + " action points added. " + name.getAP() + " AP left.");
+                outputPrinter.println(amount + " action points added. " + name.getAP() + " AP left.");
                 popUp.show(amount + " action points added. " + name.getAP() + " AP left.", "Bonus taken");
             } else if (skill.equals("HP")) {
                 name.changeHP(amount);
                 if (name.getHP() == RobotClass.MULTIPLIER * name.getEndurance()) {
-                    outputStream.println("You have been completely healed.");
+                    outputPrinter.println("You have been completely healed.");
                     popUp.show("You have been completely healed.", "Bonus taken");
                 } else {
-                    outputStream.println("You have been healed for " + amount + " points. Your current HP is " + name.getHP() + ".");
+                    outputPrinter.println("You have been healed for " + amount + " points. Your current HP is " + name.getHP() + ".");
                     popUp.show("You have been healed for " + amount + " points. Your current HP is " + name.getHP() + ".", "Bonus taken");
                 }
             } else if (skill.equals("endurance")) {
                 name.changeEndurance(amount);
-                outputStream.println("Your endurance has been increased by " + amount + ". Your current endurance is " + name.getEndurance() + ".");
+                outputPrinter.println("Your endurance has been increased by " + amount + ". Your current endurance is " + name.getEndurance() + ".");
                 popUp.show("Your endurance has been increased by " + amount + ". Your current endurance is " + name.getEndurance() + ".", "Bonus taken");
             } else if (skill.equals("speed")) {
                 name.changeSpeed(amount);
-                outputStream.println("Your speed has been increased by " + amount + ". Your current speed is " + name.getSpeed() + ".");
+                outputPrinter.println("Your speed has been increased by " + amount + ". Your current speed is " + name.getSpeed() + ".");
                 popUp.show("Your speed has been increased by " + amount + ". Your current speed is " + name.getSpeed() + ".", "Bonus taken");
             } else if (skill.equals("attack")) {
                 name.changeAttack(amount);
-                outputStream.println("Your atack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".");
+                outputPrinter.println("Your atack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".");
                 popUp.show("Your atack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".", "Bonus taken");
             }
         } else if (map.getBoxInFrontOf(name) != RoboMap.EMPTY_FIELD_SYMBOL) { //if not empty
-            outputStream.println("There is an obstacle in front of your robot preventing it from moving forward.");
+            outputPrinter.println("There is an obstacle in front of your robot preventing it from moving forward.");
             unknownCommand = true;
         } else { //if empty
             map.loadRobot(name, RoboMap.EMPTY_FIELD_SYMBOL);
@@ -402,7 +402,7 @@ public class RobotGame {
         if (map.getBoxInFrontOf(name) == RoboMap.EMPTY_FIELD_SYMBOL || //if there is nothing to hit
                 map.getBoxInFrontOf(name) == '|' ||
                 map.getBoxInFrontOf(name) == '-') { //if there is nothing to hit - condition end
-            outputStream.println("There are no robots in front of you.");
+            outputPrinter.println("There are no robots in front of you.");
             unknownCommand = true;
         } else if (map.getBoxInFrontOf(name) == RoboMap.ROBOT_SYMBOL) { //if there is another robot in front of current one
             for (int find = 1; find <= numberOfPlayers; find++) { //find which robot is standing in front of current one
@@ -412,17 +412,17 @@ public class RobotGame {
                     displayMap = false;
 
                     if (Robot[find].getHP() > 0) { //check if not killed
-                        outputStream.println("Your robot hits " + Robot[find].getName() + " for " + name.getAttack() + " HP");
-                        outputStream.println(Robot[find].getName() + "'s HP is " + Robot[find].getHP() + ". " + name.getAP() + " AP left.");
+                        outputPrinter.println("Your robot hits " + Robot[find].getName() + " for " + name.getAttack() + " HP");
+                        outputPrinter.println(Robot[find].getName() + "'s HP is " + Robot[find].getHP() + ". " + name.getAP() + " AP left.");
                     } else { //if killed
                         map.loadRobot(Robot[find], RoboMap.EMPTY_FIELD_SYMBOL); //change character in the map array
                         Robot[find].place(0, 0, 1); //remove from map
 
                         map.loadRobot(name, RoboMap.ACTIVE_ROBOT_SYMBOL);
-                        outputStream.println(map.print().substring(0, map.print().length() - 1));
+                        outputPrinter.println(map.print().substring(0, map.print().length() - 1));
                         map.loadRobot(name, RoboMap.ROBOT_SYMBOL);
 
-                        outputStream.print("Your robot kills " + Robot[find].getName() + ". ");
+                        outputPrinter.print("Your robot kills " + Robot[find].getName() + ". ");
                         popUp.show("Your robot kills " + Robot[find].getName() + "! ", "One less!");
 
                         int playersAlive = 0;
@@ -435,22 +435,22 @@ public class RobotGame {
                         if (playersAlive == 1) { //if there is only one player remaining
                             for (int k = 1; k <= numberOfPlayers; k++) { //find that player's number
                                 if (Robot[k].getHP() > 0) {
-                                    outputStream.print("\n");
+                                    outputPrinter.print("\n");
                                     popUp.show(Robot[k].getName().toUpperCase() + " IS A WINNER!", "VICTORY");
                                     programTerminator.exit(); //finish game
                                 }
                             } //end find that player's number
                         } //end if there is only one player remaining
 
-                        outputStream.println(name.getAP() + " AP left.");
+                        outputPrinter.println(name.getAP() + " AP left.");
 
                     } //end check if not killed
                     break; //if found, there is no need of looking further for
                 }
             } //end find which robot is standing in front of current one
         } else { //if there is bonus in front of robot
-            outputStream.println("Are you sure that you want to attack and destroy that bonus?");
-            String input = scanner.next();
+            outputPrinter.println("Are you sure that you want to attack and destroy that bonus?");
+            String input = inputReader.next();
             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
                 map.changeBox(name.getFrontX(), name.getFrontY(), RoboMap.EMPTY_FIELD_SYMBOL);
                 numberOfBonusesOnTheMap--;
@@ -469,7 +469,7 @@ public class RobotGame {
             map.loadRobot(Robot[order[no]], (char) no + 47); //0's code is 48
         }
 
-        outputStream.print(map.print()); //prints map with robots represented as digits
+        outputPrinter.print(map.print()); //prints map with robots represented as digits
 
         for (int no = 1; no <= numberOfPlayers; no++) { //representes all robots as inactives robots
             map.loadRobot(Robot[no], RoboMap.ROBOT_SYMBOL);
@@ -528,7 +528,7 @@ public class RobotGame {
         declareBonuses();
 
         for (int i = 1, round = 1; true; round++) {
-            outputStream.println("=========\nRound " + round + "\n=========");
+            outputPrinter.println("=========\nRound " + round + "\n=========");
             popUp.show("Round " + round, "Round");
 
             for (; i <= numberOfPlayers; i++) { //player number
@@ -550,25 +550,25 @@ public class RobotGame {
                         if (!unknownCommand && displayMap) { //don't print map and information about position and AP left when unknown or unreachable command
                             map.loadRobot(Robot[order[i]], RoboMap.ACTIVE_ROBOT_SYMBOL);
 
-                            outputStream.print(map.print());
+                            outputPrinter.print(map.print());
 
                             map.loadRobot(Robot[order[i]], RoboMap.ROBOT_SYMBOL);
 
-                            outputStream.println(Robot[order[i]].getName() + "'s turn. " + Robot[order[i]].getHP() + " HP");
-                            outputStream.println("Current position: " + Robot[order[i]].sendPosition());
-                            outputStream.println(Robot[order[i]].getAP() + " AP left.");
+                            outputPrinter.println(Robot[order[i]].getName() + "'s turn. " + Robot[order[i]].getHP() + " HP");
+                            outputPrinter.println("Current position: " + Robot[order[i]].sendPosition());
+                            outputPrinter.println(Robot[order[i]].getAP() + " AP left.");
                         } //end map and info printer
 
                         displayMap = true;
                         unknownCommand = false;
-                        String input = scanner.next();
+                        String input = inputReader.next();
 
                         if (Robot[order[i]].unknownCommand(input)) { //COMMANDS
-                            outputStream.println("Unknown command. Your robot understand only following commands: " + Robot[order[i]].knownCommands());
+                            outputPrinter.println("Unknown command. Your robot understand only following commands: " + Robot[order[i]].knownCommands());
                             unknownCommand = true;
                         } else if (input.toLowerCase().equals("skip")) {
-                            outputStream.println("Are you sure that you want to skip your turn?");
-                            input = scanner.next();
+                            outputPrinter.println("Are you sure that you want to skip your turn?");
+                            input = inputReader.next();
                             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
                                 Robot[order[i]].changeAP(-Robot[order[i]].getAP());
                             }
@@ -589,7 +589,7 @@ public class RobotGame {
                         } //END COMMANDS
 
                     } while (unknownCommand || Robot[order[i]].getAP() > 0);
-                    String antiCheat = scanner.nextLine(); //suppose that player one has 5 AP, write "m m m m m m" and press enter - six move command would be automatically treat as next player move
+                    String antiCheat = inputReader.nextLine(); //suppose that player one has 5 AP, write "m m m m m m" and press enter - six move command would be automatically treat as next player move
 
                 } //end if player alive
             } //end player number
