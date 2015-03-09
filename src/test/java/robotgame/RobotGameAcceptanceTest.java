@@ -208,7 +208,7 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(outputPrinter).println("Current position: (1;1) faces north");
         inOrder.verify(outputPrinter).println("5 AP left.");
         inOrder.verify(inputReader).next(); // -> "a"
-        inOrder.verify(outputPrinter).println("+----------+" + "\n" +
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
                 "|..........|" + "\n" +
                 "|..........|" + "\n" +
                 "|..........|" + "\n" +
@@ -219,7 +219,8 @@ public class RobotGameAcceptanceTest {
                 "|..........|" + "\n" +
                 "|..........|" + "\n" +
                 "|O.........|" + "\n" +
-                "+----------+");
+                "+----------+" + "\n" +
+                "");
         inOrder.verify(outputPrinter).print("Your robot kills Two. ");
         inOrder.verify(popUp).show("Your robot kills Two! ", "One less!");
         inOrder.verify(outputPrinter).print("" + "\n" +

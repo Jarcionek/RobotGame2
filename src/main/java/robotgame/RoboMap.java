@@ -1,59 +1,54 @@
 package robotgame;
 
 /**
- * Class RoboMap creates map made of chars for RobotGame. Chars are stored in a defined array and can be changed manually. Cooperate with Robot class. Position (0;0) is printed as a bottom left hand corner.
- *
- * @author Jaroslaw Pawlak
+ * Position (0;0) is printed as a bottom left hand corner.
  */
 public class RoboMap {
-    private int X;
-    private int Y;
-    private char map[][];
+
     public static final char ROBOT_SYMBOL = '#';
     public static final char ACTIVE_ROBOT_SYMBOL = 'O';
     public static final char BONUS_SYMBOL = '$';
     public static final char EMPTY_FIELD_SYMBOL = '.';
+    public static final char WALL_CORNER = '+';
+    public static final char WALL_HORIZONTAL = '-';
+    public static final char WALL_VERTICAL = '|';
 
-    /**
-     * Creates a map (char array) of sizes equal given+2, filled with dots (char 183), lines on sides and pluses in corners.
-     *
-     * @param width  map width
-     * @param height map height
-     */
+    private final int totalWidth;
+    private final int totalHeight;
+    private final char map[][];
+
     public RoboMap(int width, int height) {
-        X = width + 2;
-        Y = height + 2;
-        map = new char[X][Y];
+        totalWidth = width + 2;
+        totalHeight = height + 2;
+        map = new char[totalWidth][totalHeight];
 
-        for (int i = 0; i < X; i++) { //fill entire map with empty field symbols
-            for (int j = 0; j < Y; j++) {
+        for (int i = 0; i < totalWidth; i++) {
+            for (int j = 0; j < totalHeight; j++) {
                 map[i][j] = EMPTY_FIELD_SYMBOL;
             }
         }
 
-        //corners
-        map[0][0] = '+';
-        map[X - 1][0] = '+';
-        map[0][Y - 1] = '+';
-        map[X - 1][Y - 1] = '+';
-        //end corners
+        map[0][0] = WALL_CORNER;
+        map[totalWidth - 1][0] = WALL_CORNER;
+        map[0][totalHeight - 1] = WALL_CORNER;
+        map[totalWidth - 1][totalHeight - 1] = WALL_CORNER;
 
-        for (int i = 1; i < X - 1; i++) { //top and botom edges
-            map[i][0] = '-';
-            map[i][Y - 1] = '-';
-        }
-        for (int i = 1; i < Y - 1; i++) { //right and left hand sides
-            map[0][i] = '|';
-            map[X - 1][i] = '|';
+        for (int i = 1; i < totalWidth - 1; i++) {
+            map[i][0] = WALL_HORIZONTAL;
+            map[i][totalHeight - 1] = WALL_HORIZONTAL;
         }
 
+        for (int i = 1; i < totalHeight - 1; i++) {
+            map[0][i] = WALL_VERTICAL;
+            map[totalWidth - 1][i] = WALL_VERTICAL;
+        }
     }
 
     public String asString() {
         String result = "";
 
-        for (int y = Y - 1; y >= 0; y--) {
-            for (int x = 0; x <= X - 1; x++) {
+        for (int y = totalHeight - 1; y >= 0; y--) {
+            for (int x = 0; x <= totalWidth - 1; x++) {
                 result += map[x][y];
             }
             result += "\n";

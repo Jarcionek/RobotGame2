@@ -1,5 +1,8 @@
 package robotgame;
 
+import static robotgame.RoboMap.WALL_HORIZONTAL;
+import static robotgame.RoboMap.WALL_VERTICAL;
+
 public class RobotGame {
 
     private final InputReader inputReader;
@@ -400,8 +403,8 @@ public class RobotGame {
      */
     private void attack(RobotClass name) {
         if (map.getBoxInFrontOf(name) == RoboMap.EMPTY_FIELD_SYMBOL || //if there is nothing to hit
-                map.getBoxInFrontOf(name) == '|' ||
-                map.getBoxInFrontOf(name) == '-') { //if there is nothing to hit - condition end
+                map.getBoxInFrontOf(name) == WALL_VERTICAL ||
+                map.getBoxInFrontOf(name) == WALL_HORIZONTAL) { //if there is nothing to hit - condition end
             outputPrinter.println("There are no robots in front of you.");
             unknownCommand = true;
         } else if (map.getBoxInFrontOf(name) == RoboMap.ROBOT_SYMBOL) { //if there is another robot in front of current one
@@ -419,7 +422,7 @@ public class RobotGame {
                         Robot[find].place(0, 0, 1); //remove from map
 
                         map.loadRobot(name, RoboMap.ACTIVE_ROBOT_SYMBOL);
-                        outputPrinter.println(map.asString().substring(0, map.asString().length() - 1));
+                        outputPrinter.print(map.asString());
                         map.loadRobot(name, RoboMap.ROBOT_SYMBOL);
 
                         outputPrinter.print("Your robot kills " + Robot[find].getName() + ". ");
