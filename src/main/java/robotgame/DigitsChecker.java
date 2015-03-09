@@ -17,11 +17,7 @@ public class DigitsChecker {
     private int result;
 
     private boolean moreThanTenDigits() {
-        if (value.length() > 10) {
-            return true;
-        } else {
-            return false;
-        }
+        return value.length() > 10;
     }
 
     /**
@@ -67,12 +63,6 @@ public class DigitsChecker {
     }
 
     /**
-     * Creates empty DigitsChecker
-     */
-    public DigitsChecker() {
-    }
-
-    /**
      * Firstly checks if actually loaded string contains only digits.
      * Then if the number contains more than 9 digits, outOfRange gets true.
      * If the string has length not bigger than 9, it finally checks if it is in given range.
@@ -97,23 +87,6 @@ public class DigitsChecker {
             }
         }
 
-    }
-
-    /**
-     * Creates DigitsChecker with loaded string to check and min and max value of integer that string can be. Checks automatically.
-     *
-     * @param input string to check
-     * @param min   min value
-     * @param max   max value
-     */
-    public DigitsChecker(String input, int min, int max) {
-        value = input;
-        this.min = min;
-        this.max = max;
-        containNoDigits = false;
-        outOfRange = false;
-
-        check();
     }
 
     /**
