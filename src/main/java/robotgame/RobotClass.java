@@ -245,8 +245,6 @@ public class RobotClass {
 
     /**
      * Changes robot's speed.
-     *
-     * @param addHP amount to add
      */
     public void changeSpeed(int addSpeed) {
         speed += addSpeed;
@@ -263,8 +261,6 @@ public class RobotClass {
 
     /**
      * Changes robot's melee weapon strength.
-     *
-     * @param addHP amount to add
      */
     public void changeAttack(int addAttack) {
         attack += addAttack;
