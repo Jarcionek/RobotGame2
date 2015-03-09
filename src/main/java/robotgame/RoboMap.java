@@ -5,6 +5,8 @@ package robotgame;
  */
 public class RoboMap {
 
+    //TODO Jarek: grid here is unnecessary, map needs a list of bonuses (coordinates) and a list of robots (with their ids and coordinates)
+
     public static final char ROBOT_SYMBOL = '#';
     public static final char ACTIVE_ROBOT_SYMBOL = 'O';
     public static final char BONUS_SYMBOL = '$';
@@ -62,7 +64,7 @@ public class RoboMap {
      *
      * @param symbol    new symbol given as a char
      */
-    public void loadRobot(Robot robot, char symbol) {
+    public void loadRobot(Robot robot, char symbol) { //TODO Jarek: used for moving/destroying robots and for highlighting active robot
         if (robot.getX() != 0 && robot.getY() != 0) {
             map[robot.getX()][robot.getY()] = symbol;
         }
@@ -74,7 +76,7 @@ public class RoboMap {
      *
      * @param symbol    new symbol given as an int (automaticaly converted into char)
      */
-    public void loadRobot(Robot robot, int symbol) {
+    public void loadRobot(Robot robot, int symbol) { //TODO Jarek: used only for displaying map with robots ids
         if (robot.getX() != 0 && robot.getY() != 0) {
             map[robot.getX()][robot.getY()] = (char) symbol;
         }
@@ -87,7 +89,7 @@ public class RoboMap {
      * @param y         y coordinate
      * @param newSymbol new symbol given as a char
      */
-    public void changeBox(int x, int y, char newSymbol) {
+    public void changeBox(int x, int y, char newSymbol) { //TODO Jarek: used only for placing/destroying bonus
         map[x][y] = newSymbol;
     }
 
@@ -98,7 +100,7 @@ public class RoboMap {
      * @param y y coordinate
      * @return the symbol at given location
      */
-    public char getBox(int x, int y) {
+    public char getBox(int x, int y) { //TODO Jarek: used only for checking if field is empty
         return map[x][y];
     }
 
