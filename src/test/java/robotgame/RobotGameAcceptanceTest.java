@@ -1,6 +1,5 @@
 package robotgame;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.doThrow;
@@ -9,23 +8,22 @@ import static org.mockito.Mockito.when;
 
 public class RobotGameAcceptanceTest {
 
-    @Before
-    public void injectDependencies() {
-        RobotGame.scanner = mock(InputReader.class);
-        RobotGame.outputStream = mock(OutputPrinter.class);
-        RobotGame.popUp = mock(PopUp.class);
-        RobotGame.weightedListRandom = new RandomNumberGenerator();
-        RobotGame.bonusRandom = new RandomNumberGenerator();
-        RobotGame.playerOrderRandom = new RandomNumberGenerator();
-        RobotGame.programTerminator = mock(ProgramTerminator.class);
-    }
+    private final InputReader scanner = mock(InputReader.class);
+    private final OutputPrinter outputStream = mock(OutputPrinter.class);
+    private final PopUp popUp = mock(PopUp.class);
+    private final RandomNumberGenerator weightedListRandom = new RandomNumberGenerator();
+    private final RandomNumberGenerator bonusRandom = new RandomNumberGenerator();
+    private final RandomNumberGenerator playerOrderRandom = new RandomNumberGenerator();
+    private final ProgramTerminator programTerminator = mock(ProgramTerminator.class);
+
+    private final RobotGame robotGame = new RobotGame(scanner, outputStream, popUp, weightedListRandom, bonusRandom, playerOrderRandom, programTerminator);
 
     @Test
     public void canPlayVerySimpleGame() {
         // given
-        doThrow(new TestPassed()).when(RobotGame.programTerminator).exit();
+        doThrow(new TestPassed()).when(programTerminator).exit();
 
-        when(RobotGame.scanner.next())
+        when(scanner.next())
                 .thenReturn("2") // number of players
                 .thenReturn("10") // width
                 .thenReturn("10") // height
@@ -58,7 +56,7 @@ public class RobotGameAcceptanceTest {
 
         // when
         try {
-            RobotGame.main(null);
+            robotGame.start();
         } catch (TestPassed ignored) {}
 
         // then

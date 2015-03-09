@@ -1,31 +1,47 @@
 package robotgame;
 
-import com.google.common.annotations.VisibleForTesting;
-
 public class RobotGame {
 
-    @VisibleForTesting public static InputReader scanner = new InputReader();
-    @VisibleForTesting public static OutputPrinter outputStream = new OutputPrinter();
-    @VisibleForTesting public static PopUp popUp = new PopUp();
-    @VisibleForTesting public static RandomNumberGenerator weightedListRandom = new RandomNumberGenerator();
-    @VisibleForTesting public static RandomNumberGenerator bonusRandom = new RandomNumberGenerator();
-    @VisibleForTesting public static RandomNumberGenerator playerOrderRandom = new RandomNumberGenerator();
-    @VisibleForTesting public static ProgramTerminator programTerminator = new ProgramTerminator();
+    private final InputReader scanner;
+    private final OutputPrinter outputStream;
+    private final PopUp popUp;
+    private final RandomNumberGenerator weightedListRandom;
+    private final RandomNumberGenerator bonusRandom;
+    private final RandomNumberGenerator playerOrderRandom;
+    private final ProgramTerminator programTerminator;
 
-    private static int numberOfPlayers = 0;
-    private static DigitsChecker checkInput = new DigitsChecker();
+    public RobotGame(InputReader scanner,
+                     OutputPrinter outputStream,
+                     PopUp popUp,
+                     RandomNumberGenerator weightedListRandom,
+                     RandomNumberGenerator bonusRandom,
+                     RandomNumberGenerator playerOrderRandom,
+                     ProgramTerminator programTerminator) {
+        this.scanner = scanner;
+        this.outputStream = outputStream;
+        this.popUp = popUp;
+        this.weightedListRandom = weightedListRandom;
+        this.bonusRandom = bonusRandom;
+        this.playerOrderRandom = playerOrderRandom;
+        this.programTerminator = programTerminator;
+
+        this.bonuses = new WeightedList<>(weightedListRandom);
+    }
+
+    private int numberOfPlayers = 0;
+    private DigitsChecker checkInput = new DigitsChecker();
     private static final int MAP_MAX_WIDTH = 75;
     private static final int MAP_MAX_HEIGHT = 25;
-    private static int mapWidth = 0;
-    private static int mapHeight = 0;
-    private static RoboMap map;
-    private static RobotClass Robot[];
-    private static int order[];
-    private static boolean unknownCommand = false; //used also as unreachable command
-    private static boolean displayMap = true;
+    private int mapWidth = 0;
+    private int mapHeight = 0;
+    private RoboMap map;
+    private RobotClass Robot[];
+    private int order[];
+    private boolean unknownCommand = false; //used also as unreachable command
+    private boolean displayMap = true;
 
     //BONUSES
-    private static WeightedList<String> bonuses = new WeightedList<>(weightedListRandom);
+    private final WeightedList<String> bonuses;
     /**
      * Percentile chance that at the beginning of player's turn, the bonus will appear.
      */
@@ -34,10 +50,10 @@ public class RobotGame {
      * How many percent of all fields on the map have to be filled with bonuses to stop next bonus from appearing.
      */
     private static final int FULNESS = 10;
-    private static int numberOfBonusesOnTheMap = 0;
+    private int numberOfBonusesOnTheMap = 0;
 
     //LOAD DATA FROM USER
-    private static void getNumberOfPlayers() {
+    private void getNumberOfPlayers() {
         do {
             outputStream.print("Enter the number of players: ");
             String input = scanner.next();
@@ -54,7 +70,7 @@ public class RobotGame {
         } while (checkInput.containNoDigits() || checkInput.outOfRange());
     }
 
-    private static void getMapSize() {
+    private void getMapSize() {
         do {
             outputStream.print("Enter map's width: ");
             String input = scanner.next();
@@ -89,7 +105,7 @@ public class RobotGame {
         map = new RoboMap(mapWidth, mapHeight);
     }
 
-    private static void getRobotsNames() {
+    private void getRobotsNames() {
         Robot = new RobotClass[numberOfPlayers + 1]; //Robot[0] is not being used, first player is Robot[1], second player is Robot[2] and so on
 
         for (int i = 1; i <= numberOfPlayers; i++) {
@@ -116,7 +132,7 @@ public class RobotGame {
         }
     }
 
-    private static void randomizePlayersOrder() {
+    private void randomizePlayersOrder() {
         order = new int[numberOfPlayers + 1]; //as with RobotClass objects, first cell is not in use
 
         for (int i = 1; i <= numberOfPlayers; i++) {
@@ -133,7 +149,7 @@ public class RobotGame {
         }
     }
 
-    private static void allocateSkillPoints() {
+    private void allocateSkillPoints() {
         for (int i = 1; i <= numberOfPlayers; i++) {
             outputStream.println("===================================");
             outputStream.println("Allocate " + Robot[order[i]].getName() + "'s skill points.");
@@ -196,7 +212,7 @@ public class RobotGame {
      *
      * @param chance percentile chance, if lower than 0 becomes 0, if higher than 100 becomes 100
      */
-    private static void randomizeBonus(int chance) {
+    private void randomizeBonus(int chance) {
         if (FULNESS / 100.0 >= (double) numberOfBonusesOnTheMap / (mapWidth * mapHeight) && bonusRandom.nextInt(100) < chance) {
             int x;
             int y;
@@ -210,7 +226,7 @@ public class RobotGame {
         }
     }
 
-    private static void placeRobotsOnTheMap() {
+    private void placeRobotsOnTheMap() {
         for (int i = 1; i <= numberOfPlayers; i++) {
             int X = 0;
             int Y = 0;
@@ -296,7 +312,7 @@ public class RobotGame {
         }
     }
 
-    private static void declareBonuses() {
+    private void declareBonuses() {
         bonuses.add(15, "02AP");
         bonuses.add(8, "03AP");
         bonuses.add(5, "05AP");
@@ -327,7 +343,7 @@ public class RobotGame {
      *
      * @param name name of the current player's robot
      */
-    private static void move(RobotClass name) {
+    private void move(RobotClass name) {
         if (map.getBoxInFrontOf(name) == RoboMap.BONUS_SYMBOL) { //if bonus
             map.loadRobot(name, RoboMap.EMPTY_FIELD_SYMBOL);
             name.moveForward(1);
@@ -382,7 +398,7 @@ public class RobotGame {
      *
      * @param name name of the current player's robot
      */
-    private static void attack(RobotClass name) {
+    private void attack(RobotClass name) {
         if (map.getBoxInFrontOf(name) == RoboMap.EMPTY_FIELD_SYMBOL || //if there is nothing to hit
                 map.getBoxInFrontOf(name) == '|' ||
                 map.getBoxInFrontOf(name) == '-') { //if there is nothing to hit - condition end
@@ -448,7 +464,7 @@ public class RobotGame {
      *
      * @param name name of the current player robot
      */
-    private static void scan(RobotClass name) {
+    private void scan(RobotClass name) {
         for (int no = 1; no <= numberOfPlayers; no++) { //represents robots as digits
             map.loadRobot(Robot[order[no]], (char) no + 47); //0's code is 48
         }
@@ -474,7 +490,7 @@ public class RobotGame {
      * @param name this Robot's skills will be shown, should be the name of the current player robot
      * @return help text with stats of given Robot
      */
-    private static String printHelp(RobotClass name) {
+    private String printHelp(RobotClass name) {
         return name.getName() + "'s statistics:\n" +
                 name.getEndurance() + " endurance - denifes your maximum health points. Each point added to endurance increases your max HP by " + RobotClass.MULTIPLIER + " points.\n" +
                 name.getSpeed() + " speed - defines your maximum action points in turn. Each point added to speed increases your max AP by 1 point. AP are automatically restored every round.\n" +
@@ -502,8 +518,7 @@ public class RobotGame {
                 "other player's robot: " + RoboMap.ROBOT_SYMBOL;
     }
 
-    public static void main(String args[]) {
-
+    public void start() {
         getNumberOfPlayers();
         getMapSize();
         getRobotsNames();
