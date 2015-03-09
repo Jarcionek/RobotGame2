@@ -1,11 +1,11 @@
 package robotgame;
 
-public class RobotClass {
+public class Robot {
 
     /**
      * multiplier = max hp / endurance, use it to define max hp
      */
-    public static final int MULTIPLIER = 2;
+    public static final int ENDURANCE_MULTIPLIER = 2;
     private static final String COMMANDS[] = {"skip", "move", "m", "left", "l", "right", "r", "hit", "h", "attack", "a", "scan", "s", "help", "?"};
 
     private final String name;
@@ -20,9 +20,9 @@ public class RobotClass {
 
     private int skillPoints = 5;
     private int ap = 0; // action points
-    private int hp = endurance * MULTIPLIER; // health points
+    private int hp = endurance * ENDURANCE_MULTIPLIER; // health points
 
-    public RobotClass(String name) {
+    public Robot(String name) {
         this.name = name;
     }
 
@@ -112,14 +112,14 @@ public class RobotClass {
     }
 
     /**
-     * Changes robot's current health points. If bigger than MULTIPLIER*endurance takes value of MULTIPLIER*endurance, if lower than 0, takes 0.
+     * Changes robot's current health points. If bigger than ENDURANCE_MULTIPLIER*endurance takes value of ENDURANCE_MULTIPLIER*endurance, if lower than 0, takes 0.
      *
      * @param addHP amount to add
      */
     public void changeHP(int addHP) {
         hp += addHP;
-        if (hp > MULTIPLIER * endurance) {
-            hp = MULTIPLIER * endurance;
+        if (hp > ENDURANCE_MULTIPLIER * endurance) {
+            hp = ENDURANCE_MULTIPLIER * endurance;
         } else if (hp < 0) {
             hp = 0;
         }

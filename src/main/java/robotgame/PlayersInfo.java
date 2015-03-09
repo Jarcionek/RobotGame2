@@ -22,24 +22,23 @@ public class PlayersInfo {
     /**
      * Loads all information about given robot and saves it in a cell with given index.
      *
-     * @param i         index where to store
-     * @param robotName name of robot
+     * @param i index where to store
      */
-    public void load(int i, RobotClass robotName) {
-        if (robotName.getHP() == 0) {
+    public void load(int i, Robot robot) {
+        if (robot.getHP() == 0) {
             infoArray[i - 1] = (i - 1) + " - ";
-            infoArray[i - 1] += robotName.getName() + ": DEAD ";
-            infoArray[i - 1] += robotName.getEndurance() + " endurance, ";
-            infoArray[i - 1] += robotName.getSpeed() + " speed, ";
-            infoArray[i - 1] += robotName.getAttack() + " attack.";
+            infoArray[i - 1] += robot.getName() + ": DEAD ";
+            infoArray[i - 1] += robot.getEndurance() + " endurance, ";
+            infoArray[i - 1] += robot.getSpeed() + " speed, ";
+            infoArray[i - 1] += robot.getAttack() + " attack.";
         } else {
             infoArray[i - 1] = (i - 1) + " - ";
-            infoArray[i - 1] += robotName.getName() + ": ";
-            infoArray[i - 1] += robotName.getPositionAsString() + ", ";
-            infoArray[i - 1] += robotName.getHP() + " HP, ";
-            infoArray[i - 1] += robotName.getEndurance() + " endurance, ";
-            infoArray[i - 1] += robotName.getSpeed() + " speed, ";
-            infoArray[i - 1] += robotName.getAttack() + " attack.";
+            infoArray[i - 1] += robot.getName() + ": ";
+            infoArray[i - 1] += robot.getPositionAsString() + ", ";
+            infoArray[i - 1] += robot.getHP() + " HP, ";
+            infoArray[i - 1] += robot.getEndurance() + " endurance, ";
+            infoArray[i - 1] += robot.getSpeed() + " speed, ";
+            infoArray[i - 1] += robot.getAttack() + " attack.";
         }
     }
 

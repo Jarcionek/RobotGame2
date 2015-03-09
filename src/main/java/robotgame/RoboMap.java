@@ -60,12 +60,11 @@ public class RoboMap {
     /**
      * Takes position of given robot and changes symbol on the map where robot currently is.
      *
-     * @param robotName Robot's name
      * @param symbol    new symbol given as a char
      */
-    public void loadRobot(RobotClass robotName, char symbol) {
-        if (robotName.getX() != 0 && robotName.getY() != 0) {
-            map[robotName.getX()][robotName.getY()] = symbol;
+    public void loadRobot(Robot robot, char symbol) {
+        if (robot.getX() != 0 && robot.getY() != 0) {
+            map[robot.getX()][robot.getY()] = symbol;
         }
 
     }
@@ -73,12 +72,11 @@ public class RoboMap {
     /**
      * Takes position of given robot and changes symbol on the map where robot currently is. REMINDER: 183 - dot, 215 - cross.
      *
-     * @param robotName Robot's name
      * @param symbol    new symbol given as an int (automaticaly converted into char)
      */
-    public void loadRobot(RobotClass robotName, int symbol) {
-        if (robotName.getX() != 0 && robotName.getY() != 0) {
-            map[robotName.getX()][robotName.getY()] = (char) symbol;
+    public void loadRobot(Robot robot, int symbol) {
+        if (robot.getX() != 0 && robot.getY() != 0) {
+            map[robot.getX()][robot.getY()] = (char) symbol;
         }
     }
 
@@ -110,7 +108,7 @@ public class RoboMap {
      * @param robotName robot name
      * @return symbol in front of given robot
      */
-    public char getBoxInFrontOf(RobotClass robotName) {
+    public char getBoxInFrontOf(Robot robotName) {
         return map[robotName.getFrontX()][robotName.getFrontY()];
     }
 
