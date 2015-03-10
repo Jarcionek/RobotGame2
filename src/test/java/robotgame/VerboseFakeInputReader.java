@@ -1,5 +1,7 @@
 package robotgame;
 
+import robotgame.io.InputReader;
+
 import java.util.Stack;
 
 public class VerboseFakeInputReader extends InputReader {

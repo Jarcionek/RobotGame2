@@ -1,5 +1,7 @@
 package robotgame;
 
+import robotgame.io.ProgramTerminator;
+
 public class VerboseProgramTerminator extends ProgramTerminator {
 
     private final String name;

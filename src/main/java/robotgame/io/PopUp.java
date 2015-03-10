@@ -1,4 +1,4 @@
-package robotgame;
+package robotgame.io;
 
 import javax.swing.JOptionPane;
 

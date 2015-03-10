@@ -1,5 +1,7 @@
 package robotgame;
 
+import robotgame.io.OutputPrinter;
+
 public class VerboseOutputPrinter extends OutputPrinter {
 
     private final String name;

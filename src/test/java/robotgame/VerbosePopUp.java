@@ -1,5 +1,7 @@
 package robotgame;
 
+import robotgame.io.PopUp;
+
 public class VerbosePopUp extends PopUp {
 
     private final String name;

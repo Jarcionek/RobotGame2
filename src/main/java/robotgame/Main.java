@@ -1,5 +1,10 @@
 package robotgame;
 
+import robotgame.io.InputReader;
+import robotgame.io.OutputPrinter;
+import robotgame.io.PopUp;
+import robotgame.io.ProgramTerminator;
+
 public class Main {
 
     private static final InputReader inputReader = new InputReader();

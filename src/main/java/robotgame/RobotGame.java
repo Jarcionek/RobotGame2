@@ -1,5 +1,10 @@
 package robotgame;
 
+import robotgame.io.InputReader;
+import robotgame.io.OutputPrinter;
+import robotgame.io.PopUp;
+import robotgame.io.ProgramTerminator;
+
 import static robotgame.RoboMap.WALL_HORIZONTAL;
 import static robotgame.RoboMap.WALL_VERTICAL;
 import static robotgame.Robot.ENDURANCE_MULTIPLIER;

@@ -2,6 +2,9 @@ package robotgame;
 
 import org.junit.Test;
 import org.mockito.InOrder;
+import robotgame.io.OutputPrinter;
+import robotgame.io.PopUp;
+import robotgame.io.ProgramTerminator;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.spy;
