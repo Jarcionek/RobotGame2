@@ -5,6 +5,11 @@ import robotgame.io.OutputPrinter;
 import robotgame.io.PopUp;
 import robotgame.io.ProgramTerminator;
 
+import static robotgame.Attribute.AP;
+import static robotgame.Attribute.ATTACK;
+import static robotgame.Attribute.ENDURANCE;
+import static robotgame.Attribute.HP;
+import static robotgame.Attribute.SPEED;
 import static robotgame.RoboMap.WALL_HORIZONTAL;
 import static robotgame.RoboMap.WALL_VERTICAL;
 import static robotgame.Robot.ENDURANCE_MULTIPLIER;
@@ -21,7 +26,7 @@ public class RobotGame {
     public RobotGame(InputReader inputReader,
                      OutputPrinter outputPrinter,
                      PopUp popUp,
-                     WeightedList<String> bonuses,
+                     WeightedList<Bonus> bonuses,
                      RandomNumberGenerator bonusRandomNumberGenerator,
                      RandomNumberGenerator playerOrderRandomNumberGenerator,
                      ProgramTerminator programTerminator) {
@@ -48,7 +53,7 @@ public class RobotGame {
     private boolean displayMap = true;
 
     //BONUSES
-    private final WeightedList<String> bonuses;
+    private final WeightedList<Bonus> bonuses;
     /**
      * Percentile chance that at the beginning of player's turn, the bonus will appear.
      */
@@ -333,16 +338,15 @@ public class RobotGame {
             map.loadRobot(name, RoboMap.ROBOT_SYMBOL);
             numberOfBonusesOnTheMap--;
 
-            String chosenBonus = "";
-            chosenBonus = bonuses.getRandom();
-            int amount = Integer.parseInt(chosenBonus.substring(0, 2));
-            String skill = chosenBonus.substring(2);
+            Bonus bonus = bonuses.getRandom();
+            int amount = bonus.getModifier();
+            Attribute attribute = bonus.getAttribute();
 
-            if (skill.equals("AP")) { //what kind of bonus is it
+            if (attribute.equals(AP)) { //what kind of bonus is it
                 name.changeAP(amount);
                 outputPrinter.println(amount + " action points added. " + name.getAP() + " AP left.");
                 popUp.show(amount + " action points added. " + name.getAP() + " AP left.", "Bonus taken");
-            } else if (skill.equals("HP")) {
+            } else if (attribute.equals(HP)) {
                 name.changeHP(amount);
                 if (name.getHP() == ENDURANCE_MULTIPLIER * name.getEndurance()) {
                     outputPrinter.println("You have been completely healed.");
@@ -351,18 +355,18 @@ public class RobotGame {
                     outputPrinter.println("You have been healed for " + amount + " points. Your current HP is " + name.getHP() + ".");
                     popUp.show("You have been healed for " + amount + " points. Your current HP is " + name.getHP() + ".", "Bonus taken");
                 }
-            } else if (skill.equals("endurance")) {
+            } else if (attribute.equals(ENDURANCE)) {
                 name.changeEndurance(amount);
                 outputPrinter.println("Your endurance has been increased by " + amount + ". Your current endurance is " + name.getEndurance() + ".");
                 popUp.show("Your endurance has been increased by " + amount + ". Your current endurance is " + name.getEndurance() + ".", "Bonus taken");
-            } else if (skill.equals("speed")) {
+            } else if (attribute.equals(SPEED)) {
                 name.changeSpeed(amount);
                 outputPrinter.println("Your speed has been increased by " + amount + ". Your current speed is " + name.getSpeed() + ".");
                 popUp.show("Your speed has been increased by " + amount + ". Your current speed is " + name.getSpeed() + ".", "Bonus taken");
-            } else if (skill.equals("attack")) {
+            } else if (attribute.equals(ATTACK)) {
                 name.changeAttack(amount);
-                outputPrinter.println("Your atack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".");
-                popUp.show("Your atack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".", "Bonus taken");
+                outputPrinter.println("Your attack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".");
+                popUp.show("Your attack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".", "Bonus taken");
             }
         } else if (map.getBoxInFrontOf(name) != RoboMap.EMPTY_FIELD_SYMBOL) { //if not empty
             outputPrinter.println("There is an obstacle in front of your robot preventing it from moving forward.");

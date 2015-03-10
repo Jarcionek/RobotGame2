@@ -1,30 +1,36 @@
 package robotgame;
 
-public class AvailableBonuses extends WeightedList<String> {
+import static robotgame.Attribute.AP;
+import static robotgame.Attribute.ATTACK;
+import static robotgame.Attribute.ENDURANCE;
+import static robotgame.Attribute.HP;
+import static robotgame.Attribute.SPEED;
+
+public class AvailableBonuses extends WeightedList<Bonus> {
 
     public AvailableBonuses(RandomNumberGenerator randomNumberGenerator) {
         super(randomNumberGenerator);
-        add(15, "02AP");
-        add(8, "03AP");
-        add(5, "05AP");
-        add(1, "10AP");
-        add(15, "05HP");
-        add(8, "10HP");
-        add(5, "15HP");
-        add(3, "20HP");
-        add(1, "80HP");
-        add(5, "01endurance");
-        add(4, "02endurance");
-        add(3, "03endurance");
-        add(1, "05endurance");
-        add(5, "01speed");
-        add(4, "02speed");
-        add(3, "03speed");
-        add(1, "05speed");
-        add(5, "01attack");
-        add(4, "02attack");
-        add(3, "03attack");
-        add(1, "05attack");
+        add(15, new Bonus(AP, 2));
+        add(8, new Bonus(AP, 3));
+        add(5, new Bonus(AP, 5));
+        add(1, new Bonus(AP, 10));
+        add(15, new Bonus(HP, 5));
+        add(8, new Bonus(HP, 10));
+        add(5, new Bonus(HP, 15));
+        add(3, new Bonus(HP, 20));
+        add(1, new Bonus(HP, 80));
+        add(5, new Bonus(ENDURANCE, 1));
+        add(4, new Bonus(ENDURANCE, 2));
+        add(3, new Bonus(ENDURANCE, 3));
+        add(1, new Bonus(ENDURANCE, 5));
+        add(5, new Bonus(SPEED, 1));
+        add(4, new Bonus(SPEED, 2));
+        add(3, new Bonus(SPEED, 3));
+        add(1, new Bonus(SPEED, 5));
+        add(5, new Bonus(ATTACK, 1));
+        add(4, new Bonus(ATTACK, 2));
+        add(3, new Bonus(ATTACK, 3));
+        add(1, new Bonus(ATTACK, 5));
     }
 
 }

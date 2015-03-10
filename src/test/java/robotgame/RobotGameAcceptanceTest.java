@@ -11,6 +11,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static robotgame.Attribute.AP;
+import static robotgame.Attribute.ATTACK;
+import static robotgame.Attribute.ENDURANCE;
+import static robotgame.Attribute.HP;
+import static robotgame.Attribute.SPEED;
 
 public class RobotGameAcceptanceTest {
 
@@ -2422,12 +2427,12 @@ public class RobotGameAcceptanceTest {
                 .willReturn(2);
 
         when(availableBonuses.getRandom())
-                .thenReturn("05speed")
-                .thenReturn("05HP")
-                .thenReturn("10AP")
-                .thenReturn("80HP")
-                .thenReturn("01endurance")
-                .thenReturn("05attack");
+                .thenReturn(new Bonus(SPEED, 5))
+                .thenReturn(new Bonus(HP, 5))
+                .thenReturn(new Bonus(AP, 10))
+                .thenReturn(new Bonus(HP, 80))
+                .thenReturn(new Bonus(ENDURANCE, 1))
+                .thenReturn(new Bonus(ATTACK, 5));
 
         // when
         try {
@@ -2809,8 +2814,8 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(outputPrinter).println("Current position: (3;3) faces east");
         inOrder.verify(outputPrinter).println("5 AP left.");
         inOrder.verify(inputReader).next(); // -> "m"
-        inOrder.verify(outputPrinter).println("Your atack has been increased by 5. Your current attack is 6.");
-        inOrder.verify(popUp).show("Your atack has been increased by 5. Your current attack is 6.", "Bonus taken");
+        inOrder.verify(outputPrinter).println("Your attack has been increased by 5. Your current attack is 6.");
+        inOrder.verify(popUp).show("Your attack has been increased by 5. Your current attack is 6.", "Bonus taken");
         inOrder.verify(outputPrinter).print("+----------+" + "\n" +
                 "|..........|" + "\n" +
                 "|..........|" + "\n" +
