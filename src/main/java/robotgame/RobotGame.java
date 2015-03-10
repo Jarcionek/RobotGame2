@@ -71,15 +71,15 @@ public class RobotGame {
             String input = inputReader.next();
             checkInput.load(input, 1, 10);
 
-            if (checkInput.containNoDigits()) {
+            if (checkInput.containsNonDigits()) {
                 outputPrinter.println("Incorrect value. Only digits are allowed.");
-            } else if (checkInput.outOfRange()) {
+            } else if (checkInput.isOutOfRange()) {
                 outputPrinter.println("At least one player is required. Maximum 10 players.");
             } else {
-                numberOfPlayers = Integer.parseInt(input);
+                numberOfPlayers = checkInput.getInteger();
             }
 
-        } while (checkInput.containNoDigits() || checkInput.outOfRange());
+        } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
     }
 
     private void getMapSize() {
@@ -88,15 +88,15 @@ public class RobotGame {
             String input = inputReader.next();
             checkInput.load(input, 10, MAP_MAX_WIDTH);
 
-            if (checkInput.containNoDigits()) {
+            if (checkInput.containsNonDigits()) {
                 outputPrinter.println("Incorrect value. Only digits are allowed.");
-            } else if (checkInput.outOfRange()) {
+            } else if (checkInput.isOutOfRange()) {
                 outputPrinter.println("Map's width cannot be lower than 10 or bigger than " + MAP_MAX_WIDTH + ".");
             } else {
-                mapWidth = Integer.parseInt(input);
+                mapWidth = checkInput.getInteger();
             }
 
-        } while (checkInput.containNoDigits() || checkInput.outOfRange());
+        } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
 
 
         do {
@@ -104,15 +104,15 @@ public class RobotGame {
             String input = inputReader.next();
             checkInput.load(input, 10, MAP_MAX_HEIGHT);
 
-            if (checkInput.containNoDigits()) {
+            if (checkInput.containsNonDigits()) {
                 outputPrinter.println("Incorrect value. Only digits are allowed.");
-            } else if (checkInput.outOfRange()) {
+            } else if (checkInput.isOutOfRange()) {
                 outputPrinter.println("Map's height cannot be lower than 10 or bigger than " + MAP_MAX_HEIGHT + ".");
             } else {
-                mapHeight = Integer.parseInt(input);
+                mapHeight = checkInput.getInteger();
             }
 
-        } while (checkInput.containNoDigits() || checkInput.outOfRange());
+        } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
 
         map = new RoboMap(mapWidth, mapHeight);
     }
@@ -255,30 +255,30 @@ public class RobotGame {
                     String input = inputReader.next();
                     checkInput.load(input, 1, mapWidth);
 
-                    if (checkInput.containNoDigits()) {
+                    if (checkInput.containsNonDigits()) {
                         outputPrinter.println("Incorrect value. Only digits are allowed.");
-                    } else if (checkInput.outOfRange()) {
+                    } else if (checkInput.isOutOfRange()) {
                         outputPrinter.println("Out of map.");
                     } else {
-                        X = Integer.parseInt(input);
+                        X = checkInput.getInteger();
                     }
 
-                } while (checkInput.containNoDigits() || checkInput.outOfRange());
+                } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
 
                 do {
                     outputPrinter.print("Enter " + robots[order[i]].getName() + "'s Y coordinate: ");
                     String input = inputReader.next();
                     checkInput.load(input, 1, mapHeight);
 
-                    if (checkInput.containNoDigits()) {
+                    if (checkInput.containsNonDigits()) {
                         outputPrinter.println("Incorrect value. Only digits are allowed.");
-                    } else if (checkInput.outOfRange()) {
+                    } else if (checkInput.isOutOfRange()) {
                         outputPrinter.println("Out of map.");
                     } else {
-                        Y = Integer.parseInt(input);
+                        Y = checkInput.getInteger();
                     }
 
-                } while (checkInput.containNoDigits() || checkInput.outOfRange());
+                } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
 
                 robots[order[i]].place(X, Y, 1);
 
