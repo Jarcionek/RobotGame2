@@ -5,6 +5,9 @@ import robotgame.io.OutputPrinter;
 import robotgame.io.PopUp;
 import robotgame.io.ProgramTerminator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static robotgame.Attribute.AP;
 import static robotgame.Attribute.ATTACK;
 import static robotgame.Attribute.ENDURANCE;
@@ -47,8 +50,7 @@ public class RobotGame {
     private int mapWidth = 0;
     private int mapHeight = 0;
     private RoboMap map;
-    private Robot robots[];
-    private int order[];
+    private List<Robot> robots;
     private boolean unknownCommand = false; //used also as unreachable command
     private boolean displayMap = true;
 
@@ -118,7 +120,7 @@ public class RobotGame {
     }
 
     private void getRobotsNames() {
-        robots = new Robot[numberOfPlayers + 1]; //robots[0] is not being used, first player is robots[1], second player is robots[2] and so on
+        robots = new ArrayList<>(numberOfPlayers);
 
         for (int i = 1; i <= numberOfPlayers; i++) {
             String name;
@@ -129,8 +131,8 @@ public class RobotGame {
                 name = inputReader.next();
                 repeatedName = false;
 
-                for (int j = 1; j < i; j++) {
-                    if (name.toLowerCase().equals(robots[j].getName().toLowerCase())) {
+                for (int j = 0; j < robots.size(); j++) {
+                    if (name.toLowerCase().equals(robots.get(j).getName().toLowerCase())) {
                         repeatedName = true;
                         outputPrinter.println("Another player has already chosen that name.");
                         break;
@@ -139,32 +141,25 @@ public class RobotGame {
 
             } while (repeatedName);
 
-            robots[i] = new Robot(name);
+            robots.add(new Robot(name));
         }
     }
 
     private void randomizePlayersOrder() {
-        order = new int[numberOfPlayers + 1]; //as with RobotClass objects, first cell is not in use
-
-        for (int i = 1; i <= numberOfPlayers; i++) {
-            order[i] = i;
-        }
-
         for (int i = 0; i < numberOfPlayers * numberOfPlayers; i++) {
-            int x;
-            int choiceOne = playerOrderRandomNumberGenerator.nextInt(numberOfPlayers) + 1;
-            int choiceTwo = playerOrderRandomNumberGenerator.nextInt(numberOfPlayers) + 1;
-            x = order[choiceOne];
-            order[choiceOne] = order[choiceTwo];
-            order[choiceTwo] = x;
+            int choiceOne = playerOrderRandomNumberGenerator.nextInt(numberOfPlayers);
+            int choiceTwo = playerOrderRandomNumberGenerator.nextInt(numberOfPlayers);
+            Robot x = robots.get(choiceOne);
+            robots.set(choiceOne, robots.get(choiceTwo));
+            robots.set(choiceTwo, x);
         }
     }
 
     private void allocateSkillPoints() {
-        for (int i = 1; i <= numberOfPlayers; i++) {
+        for (int i = 0; i < numberOfPlayers; i++) {
             outputPrinter.println("===================================");
-            outputPrinter.println("Allocate " + robots[order[i]].getName() + "'s skill points.");
-            popUp.show("Allocate " + robots[order[i]].getName() + "'s skill points.", "Allocate skill points");
+            outputPrinter.println("Allocate " + robots.get(i).getName() + "'s skill points.");
+            popUp.show("Allocate " + robots.get(i).getName() + "'s skill points.", "Allocate skill points");
             outputPrinter.println("By default, each robot has 3 endurance, 5 speed and 1 attack.");
             String possibilities[] = {"endurance", "e", "speed", "s", "attack", "a"};
 
@@ -182,7 +177,7 @@ public class RobotGame {
             do {
                 boolean incorrect_input = true;
                 do {
-                    outputPrinter.println("You have " + robots[order[i]].getSkillPoints() + " skill points to allocate.");
+                    outputPrinter.println("You have " + robots.get(i).getSkillPoints() + " skill points to allocate.");
                     String input = inputReader.next();
 
                     for (int j = 0; j < possibilities.length; j++) {
@@ -195,23 +190,23 @@ public class RobotGame {
                         outputPrinter.println("Incorrect skill.");
                         outputPrinter.println("You can allocate skill points to the following skills: " + result);
                     } else {
-                        robots[order[i]].changeSkillPoints(-1);
+                        robots.get(i).changeSkillPoints(-1);
                         if (input.toLowerCase().equals("endurance") || input.toLowerCase().equals("e")) {
-                            robots[order[i]].changeEndurance(1);
-                            outputPrinter.println("Your endurance is " + robots[order[i]].getEndurance() + " now.");
+                            robots.get(i).changeEndurance(1);
+                            outputPrinter.println("Your endurance is " + robots.get(i).getEndurance() + " now.");
                         } else if (input.toLowerCase().equals("speed") || input.toLowerCase().equals("s")) {
-                            robots[order[i]].changeSpeed(1);
-                            outputPrinter.println("Your speed is " + robots[order[i]].getSpeed() + " now.");
+                            robots.get(i).changeSpeed(1);
+                            outputPrinter.println("Your speed is " + robots.get(i).getSpeed() + " now.");
                         } else if (input.toLowerCase().equals("attack") || input.toLowerCase().equals("a")) {
-                            robots[order[i]].changeAttack(1);
-                            outputPrinter.println("Your attack is " + robots[order[i]].getAttack() + " now.");
+                            robots.get(i).changeAttack(1);
+                            outputPrinter.println("Your attack is " + robots.get(i).getAttack() + " now.");
                         }
                     }
 
                 } while (incorrect_input);
-            } while (robots[order[i]].getSkillPoints() > 0);
+            } while (robots.get(i).getSkillPoints() > 0);
             String antiCheat = inputReader.nextLine(); //suppose that player one has 5 free skill points, write "e e e e e e" and press enter - six "e" would cause automatically adding one point of next player to his endurance
-            robots[order[i]].changeHP(ENDURANCE_MULTIPLIER * robots[order[i]].getEndurance());
+            robots.get(i).changeHP(ENDURANCE_MULTIPLIER * robots.get(i).getEndurance());
         }
         outputPrinter.println("===================================");
     }
@@ -238,7 +233,7 @@ public class RobotGame {
     }
 
     private void placeRobotsOnTheMap() {
-        for (int i = 1; i <= numberOfPlayers; i++) {
+        for (int i = 0; i < numberOfPlayers; i++) {
             int X = 0;
             int Y = 0;
             int direction = 0;
@@ -251,7 +246,7 @@ public class RobotGame {
                 outputPrinter.print(map.asString());
 
                 do {
-                    outputPrinter.print("Enter " + robots[order[i]].getName() + "'s X coordinate: ");
+                    outputPrinter.print("Enter " + robots.get(i).getName() + "'s X coordinate: ");
                     String input = inputReader.next();
                     checkInput.load(input, 1, mapWidth);
 
@@ -266,7 +261,7 @@ public class RobotGame {
                 } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
 
                 do {
-                    outputPrinter.print("Enter " + robots[order[i]].getName() + "'s Y coordinate: ");
+                    outputPrinter.print("Enter " + robots.get(i).getName() + "'s Y coordinate: ");
                     String input = inputReader.next();
                     checkInput.load(input, 1, mapHeight);
 
@@ -280,10 +275,10 @@ public class RobotGame {
 
                 } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
 
-                robots[order[i]].place(X, Y, 1);
+                robots.get(i).place(X, Y, 1);
 
-                for (int find = 1; find < i; find++) { //if there is another robot with that position loaded
-                    if (robots[order[i]].getX() == robots[order[find]].getX() && robots[order[i]].getY() == robots[order[find]].getY()) {
+                for (int find = 0; find < i; find++) { //if there is another robot with that position loaded
+                    if (robots.get(i).getX() == robots.get(find).getX() && robots.get(i).getY() == robots.get(find).getY()) {
                         outputPrinter.println("There is already another robot.");
                         alreadyUsed = true;
                         break;
@@ -293,7 +288,7 @@ public class RobotGame {
             } while (alreadyUsed); //end get X and Y
 
             do { //get direction
-                outputPrinter.print("Enter " + robots[order[i]].getName() + "'s facing direction: ");
+                outputPrinter.print("Enter " + robots.get(i).getName() + "'s facing direction: ");
                 String input = inputReader.next().toLowerCase();
                 incorrect_direction = false;
 
@@ -318,8 +313,8 @@ public class RobotGame {
             } while (incorrect_direction); //end get direction
 
             String antiCheat = inputReader.nextLine();
-            robots[order[i]].place(X, Y, direction); //despite robot was created after taking X and Y, it was done without direction (assigned north)
-            map.loadRobot(robots[order[i]], RoboMap.ROBOT_SYMBOL); //load robot to the map
+            robots.get(i).place(X, Y, direction); //despite robot was created after taking X and Y, it was done without direction (assigned north)
+            map.loadRobot(robots.get(i), RoboMap.ROBOT_SYMBOL); //load robot to the map
         }
     }
 
@@ -391,38 +386,38 @@ public class RobotGame {
             outputPrinter.println("There are no robots in front of you.");
             unknownCommand = true;
         } else if (map.getBoxInFrontOf(robot) == RoboMap.ROBOT_SYMBOL) { //if there is another robot in front of current one
-            for (int find = 1; find <= numberOfPlayers; find++) { //find which robot is standing in front of current one
-                if (robot.getFrontX() == robots[find].getX() && robot.getFrontY() == robots[find].getY()) {
-                    robots[find].changeHP(-robot.getAttack());
+            for (int find = 0; find < numberOfPlayers; find++) { //find which robot is standing in front of current one
+                if (robot.getFrontX() == robots.get(find).getX() && robot.getFrontY() == robots.get(find).getY()) {
+                    robots.get(find).changeHP(-robot.getAttack());
                     robot.changeAP(-1);
                     displayMap = false;
 
-                    if (robots[find].getHP() > 0) { //check if not killed
-                        outputPrinter.println("Your robot hits " + robots[find].getName() + " for " + robot.getAttack() + " HP");
-                        outputPrinter.println(robots[find].getName() + "'s HP is " + robots[find].getHP() + ". " + robot.getAP() + " AP left.");
+                    if (robots.get(find).getHP() > 0) { //check if not killed
+                        outputPrinter.println("Your robot hits " + robots.get(find).getName() + " for " + robot.getAttack() + " HP");
+                        outputPrinter.println(robots.get(find).getName() + "'s HP is " + robots.get(find).getHP() + ". " + robot.getAP() + " AP left.");
                     } else { //if killed
-                        map.loadRobot(robots[find], RoboMap.EMPTY_FIELD_SYMBOL); //change character in the map array
-                        robots[find].place(0, 0, 1); //remove from map
+                        map.loadRobot(robots.get(find), RoboMap.EMPTY_FIELD_SYMBOL); //change character in the map array
+                        robots.get(find).place(0, 0, 1); //remove from map
 
                         map.loadRobot(robot, RoboMap.ACTIVE_ROBOT_SYMBOL);
                         outputPrinter.print(map.asString());
                         map.loadRobot(robot, RoboMap.ROBOT_SYMBOL);
 
-                        outputPrinter.print("Your robot kills " + robots[find].getName() + ". ");
-                        popUp.show("Your robot kills " + robots[find].getName() + "! ", "One less!");
+                        outputPrinter.print("Your robot kills " + robots.get(find).getName() + ". ");
+                        popUp.show("Your robot kills " + robots.get(find).getName() + "! ", "One less!");
 
                         int playersAlive = 0;
-                        for (int k = 1; k <= numberOfPlayers; k++) { //check how many players are still in game
-                            if (robots[k].getHP() > 0) {
+                        for (int k = 0; k < numberOfPlayers; k++) { //check how many players are still in game
+                            if (robots.get(k).getHP() > 0) {
                                 playersAlive++;
                             }
                         } //end check how many players are still in game
 
                         if (playersAlive == 1) { //if there is only one player remaining
-                            for (int k = 1; k <= numberOfPlayers; k++) { //find that player's number
-                                if (robots[k].getHP() > 0) {
+                            for (int k = 0; k < numberOfPlayers; k++) { //find that player's number
+                                if (robots.get(k).getHP() > 0) {
                                     outputPrinter.print("\n");
-                                    popUp.show(robots[k].getName().toUpperCase() + " IS A WINNER!", "VICTORY");
+                                    popUp.show(robots.get(k).getName().toUpperCase() + " IS A WINNER!", "VICTORY");
                                     programTerminator.exit(); //finish game
                                 }
                             } //end find that player's number
@@ -451,21 +446,21 @@ public class RobotGame {
      * @param robot name of the current player robot
      */
     private void scan(Robot robot) {
-        for (int no = 1; no <= numberOfPlayers; no++) { //represents robots as digits
-            map.loadRobot(robots[order[no]], (char) no + 47); //0's code is 48
+        for (int no = 0; no < numberOfPlayers; no++) { //represents robots as digits
+            map.loadRobot(robots.get(no), (char) no + 48); //0's code is 48
         }
 
         outputPrinter.print(map.asString()); //prints map with robots represented as digits
 
-        for (int no = 1; no <= numberOfPlayers; no++) { //representes all robots as inactives robots
-            map.loadRobot(robots[no], RoboMap.ROBOT_SYMBOL);
+        for (int no = 0; no < numberOfPlayers; no++) { //representes all robots as inactives robots
+            map.loadRobot(robots.get(no), RoboMap.ROBOT_SYMBOL);
         }
 
         map.loadRobot(robot, RoboMap.ACTIVE_ROBOT_SYMBOL); //represents current player's robot as active robot
 
         PlayersInfo Information = new PlayersInfo(numberOfPlayers);
-        for (int player = 1; player <= numberOfPlayers; player++) {
-            Information.load(player, robots[order[player]]);
+        for (int player = 0; player < numberOfPlayers; player++) {
+            Information.load(player, robots.get(player));
         }
         popUp.show(Information.print(), "Players' informations");
     }
@@ -512,19 +507,19 @@ public class RobotGame {
         allocateSkillPoints();
         placeRobotsOnTheMap();
 
-        for (int i = 1, round = 1; true; round++) {
+        for (int round = 1; true; round++) {
             outputPrinter.println("=========\nRound " + round + "\n=========");
             popUp.show("Round " + round, "Round");
 
-            for (; i <= numberOfPlayers; i++) { //player number
-                if (robots[order[i]].getHP() > 0) { //if player alive
-                    robots[order[i]].changeAP(robots[order[i]].getSpeed()); //restore AP depepnding on Robot's speed
+            for (int i = 0; i < numberOfPlayers; i++) { //player number
+                if (robots.get(i).getHP() > 0) { //if player alive
+                    robots.get(i).changeAP(robots.get(i).getSpeed()); //restore AP depepnding on Robot's speed
                     unknownCommand = false;
                     displayMap = true;
 
-                    popUp.show(robots[order[i]].getName() + "'s turn.", "Turn");
+                    popUp.show(robots.get(i).getName() + "'s turn.", "Turn");
 
-                    if (i == 1 && round == 1) {
+                    if (i == 0 && round == 1) {
                         randomizeBonus(100);
                     } else {
                         randomizeBonus(CHANCE);
@@ -533,53 +528,51 @@ public class RobotGame {
                     do {
 
                         if (!unknownCommand && displayMap) { //don't print map and information about position and AP left when unknown or unreachable command
-                            map.loadRobot(robots[order[i]], RoboMap.ACTIVE_ROBOT_SYMBOL);
+                            map.loadRobot(robots.get(i), RoboMap.ACTIVE_ROBOT_SYMBOL);
 
                             outputPrinter.print(map.asString());
 
-                            map.loadRobot(robots[order[i]], RoboMap.ROBOT_SYMBOL);
+                            map.loadRobot(robots.get(i), RoboMap.ROBOT_SYMBOL);
 
-                            outputPrinter.println(robots[order[i]].getName() + "'s turn. " + robots[order[i]].getHP() + " HP");
-                            outputPrinter.println("Current position: " + robots[order[i]].getPositionAsString());
-                            outputPrinter.println(robots[order[i]].getAP() + " AP left.");
+                            outputPrinter.println(robots.get(i).getName() + "'s turn. " + robots.get(i).getHP() + " HP");
+                            outputPrinter.println("Current position: " + robots.get(i).getPositionAsString());
+                            outputPrinter.println(robots.get(i).getAP() + " AP left.");
                         } //end map and info printer
 
                         displayMap = true;
                         unknownCommand = false;
                         String input = inputReader.next();
 
-                        if (robots[order[i]].unknownCommand(input)) { //COMMANDS
-                            outputPrinter.println("Unknown command. Your robot understand only following commands: " + robots[order[i]].knownCommands());
+                        if (robots.get(i).unknownCommand(input)) { //COMMANDS
+                            outputPrinter.println("Unknown command. Your robot understand only following commands: " + robots.get(i).knownCommands());
                             unknownCommand = true;
                         } else if (input.toLowerCase().equals("skip")) {
                             outputPrinter.println("Are you sure that you want to skip your turn?");
                             input = inputReader.next();
                             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
-                                robots[order[i]].changeAP(-robots[order[i]].getAP());
+                                robots.get(i).changeAP(-robots.get(i).getAP());
                             }
                         } else if (input.toLowerCase().equals("move") || input.toLowerCase().equals("m")) { //start move command
-                            move(robots[order[i]]);
+                            move(robots.get(i));
                         } else if (input.toLowerCase().equals("left") || input.toLowerCase().equals("l")) {
-                            robots[order[i]].turnLeft();
-                            robots[order[i]].changeAP(-1);
+                            robots.get(i).turnLeft();
+                            robots.get(i).changeAP(-1);
                         } else if (input.toLowerCase().equals("right") || input.toLowerCase().equals("r")) {
-                            robots[order[i]].turnRight();
-                            robots[order[i]].changeAP(-1);
+                            robots.get(i).turnRight();
+                            robots.get(i).changeAP(-1);
                         } else if (input.toLowerCase().equals("hit") || input.toLowerCase().equals("h") || input.toLowerCase().equals("attack") || input.toLowerCase().equals("a")) {
-                            attack(robots[order[i]]);
+                            attack(robots.get(i));
                         } else if (input.toLowerCase().equals("scan") || input.toLowerCase().equals("s")) {
-                            scan(robots[order[i]]);
+                            scan(robots.get(i));
                         } else if (input.toLowerCase().equals("help") || input.equals("?")) {
-                            popUp.show(printHelp(robots[order[i]]), "Help");
+                            popUp.show(printHelp(robots.get(i)), "Help");
                         } //END COMMANDS
 
-                    } while (unknownCommand || robots[order[i]].getAP() > 0);
+                    } while (unknownCommand || robots.get(i).getAP() > 0);
                     String antiCheat = inputReader.nextLine(); //suppose that player one has 5 AP, write "m m m m m m" and press enter - six move command would be automatically treat as next player move
 
                 } //end if player alive
             } //end player number
-
-            i = 1;
         }
     }
 }

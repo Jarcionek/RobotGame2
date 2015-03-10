@@ -6,7 +6,7 @@ package robotgame;
  * @author Jaroslaw Pawlak
  */
 public class PlayersInfo {
-    private int players;
+
     private String infoArray[];
 
     /**
@@ -15,8 +15,7 @@ public class PlayersInfo {
      * @param numberOfPlayers number of cells in array
      */
     public PlayersInfo(int numberOfPlayers) {
-        players = numberOfPlayers;
-        infoArray = new String[players];
+        infoArray = new String[numberOfPlayers];
     }
 
     /**
@@ -26,19 +25,19 @@ public class PlayersInfo {
      */
     public void load(int i, Robot robot) {
         if (robot.getHP() == 0) {
-            infoArray[i - 1] = (i - 1) + " - ";
-            infoArray[i - 1] += robot.getName() + ": DEAD ";
-            infoArray[i - 1] += robot.getEndurance() + " endurance, ";
-            infoArray[i - 1] += robot.getSpeed() + " speed, ";
-            infoArray[i - 1] += robot.getAttack() + " attack.";
+            infoArray[i] = i + " - ";
+            infoArray[i] += robot.getName() + ": DEAD ";
+            infoArray[i] += robot.getEndurance() + " endurance, ";
+            infoArray[i] += robot.getSpeed() + " speed, ";
+            infoArray[i] += robot.getAttack() + " attack.";
         } else {
-            infoArray[i - 1] = (i - 1) + " - ";
-            infoArray[i - 1] += robot.getName() + ": ";
-            infoArray[i - 1] += robot.getPositionAsString() + ", ";
-            infoArray[i - 1] += robot.getHP() + " HP, ";
-            infoArray[i - 1] += robot.getEndurance() + " endurance, ";
-            infoArray[i - 1] += robot.getSpeed() + " speed, ";
-            infoArray[i - 1] += robot.getAttack() + " attack.";
+            infoArray[i] = i + " - ";
+            infoArray[i] += robot.getName() + ": ";
+            infoArray[i] += robot.getPositionAsString() + ", ";
+            infoArray[i] += robot.getHP() + " HP, ";
+            infoArray[i] += robot.getEndurance() + " endurance, ";
+            infoArray[i] += robot.getSpeed() + " speed, ";
+            infoArray[i] += robot.getAttack() + " attack.";
         }
     }
 
@@ -49,7 +48,7 @@ public class PlayersInfo {
      */
     public String print() {
         String result = "";
-        for (int i = 0; i < players; i++) {
+        for (int i = 0; i < infoArray.length; i++) {
             result += infoArray[i] + "\n";
         }
         return result;
