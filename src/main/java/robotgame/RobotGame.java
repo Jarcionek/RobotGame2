@@ -14,7 +14,6 @@ public class RobotGame {
     private final InputReader inputReader;
     private final OutputPrinter outputPrinter;
     private final PopUp popUp;
-    private final RandomNumberGenerator weightedListRandomNumberGenerator;
     private final RandomNumberGenerator bonusRandomNumberGenerator;
     private final RandomNumberGenerator playerOrderRandomNumberGenerator;
     private final ProgramTerminator programTerminator;
@@ -22,19 +21,18 @@ public class RobotGame {
     public RobotGame(InputReader inputReader,
                      OutputPrinter outputPrinter,
                      PopUp popUp,
-                     RandomNumberGenerator weightedListRandomNumberGenerator,
+                     WeightedList<String> bonuses,
                      RandomNumberGenerator bonusRandomNumberGenerator,
                      RandomNumberGenerator playerOrderRandomNumberGenerator,
                      ProgramTerminator programTerminator) {
         this.inputReader = inputReader;
         this.outputPrinter = outputPrinter;
         this.popUp = popUp;
-        this.weightedListRandomNumberGenerator = weightedListRandomNumberGenerator;
         this.bonusRandomNumberGenerator = bonusRandomNumberGenerator;
         this.playerOrderRandomNumberGenerator = playerOrderRandomNumberGenerator;
         this.programTerminator = programTerminator;
 
-        this.bonuses = new WeightedList<>(weightedListRandomNumberGenerator);
+        this.bonuses = bonuses;
     }
 
     private int numberOfPlayers = 0;
@@ -320,30 +318,6 @@ public class RobotGame {
         }
     }
 
-    private void declareBonuses() {
-        bonuses.add(15, "02AP");
-        bonuses.add(8, "03AP");
-        bonuses.add(5, "05AP");
-        bonuses.add(1, "10AP");
-        bonuses.add(15, "05HP");
-        bonuses.add(8, "10HP");
-        bonuses.add(5, "15HP");
-        bonuses.add(3, "20HP");
-        bonuses.add(1, "80HP");
-        bonuses.add(5, "01endurance");
-        bonuses.add(4, "02endurance");
-        bonuses.add(3, "03endurance");
-        bonuses.add(1, "05endurance");
-        bonuses.add(5, "01speed");
-        bonuses.add(4, "02speed");
-        bonuses.add(3, "03speed");
-        bonuses.add(1, "05speed");
-        bonuses.add(5, "01attack");
-        bonuses.add(4, "02attack");
-        bonuses.add(3, "03attack");
-        bonuses.add(1, "05attack");
-    }
-
     //COMMANDS
 
     /**
@@ -533,7 +507,6 @@ public class RobotGame {
         randomizePlayersOrder();
         allocateSkillPoints();
         placeRobotsOnTheMap();
-        declareBonuses();
 
         for (int i = 1, round = 1; true; round++) {
             outputPrinter.println("=========\nRound " + round + "\n=========");

@@ -18,7 +18,7 @@ public class Main {
                 inputReader,
                 outputPrinter,
                 popUp,
-                randomNumberGenerator,
+                new AvailableBonuses(randomNumberGenerator),
                 randomNumberGenerator,
                 randomNumberGenerator,
                 programTerminator

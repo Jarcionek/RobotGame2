@@ -7,6 +7,7 @@ import robotgame.io.PopUp;
 import robotgame.io.ProgramTerminator;
 
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -15,12 +16,12 @@ public class RobotGameAcceptanceTest {
     private final VerboseFakeInputReader inputReader = spy(new VerboseFakeInputReader("inputReader"));
     private final OutputPrinter outputPrinter = spy(new VerboseOutputPrinter("outputPrinter"));
     private final PopUp popUp = spy(new VerbosePopUp("popUp"));
-    private final VerboseFakeRandomNumberGenerator weightedListRandomNumberGenerator = spy(new VerboseFakeRandomNumberGenerator("weightedListRandomNumberGenerator"));
+    private final AvailableBonuses availableBonuses = mock(AvailableBonuses.class);
     private final VerboseFakeRandomNumberGenerator bonusRandomNumberGenerator = spy(new VerboseFakeRandomNumberGenerator("bonusRandomNumberGenerator"));
     private final VerboseFakeRandomNumberGenerator playerOrderRandomNumberGenerator = spy(new VerboseFakeRandomNumberGenerator("playerOrderRandomNumberGenerator"));
     private final ProgramTerminator programTerminator = spy(new VerboseProgramTerminator("programTerminator"));
 
-    private final RobotGame robotGame = new RobotGame(inputReader, outputPrinter, popUp, weightedListRandomNumberGenerator, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+    private final RobotGame robotGame = new RobotGame(inputReader, outputPrinter, popUp, availableBonuses, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
 
     @Test
     public void playsSimpleGame() {
@@ -80,7 +81,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, weightedListRandomNumberGenerator, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "2"
@@ -434,7 +435,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, weightedListRandomNumberGenerator, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "4"
@@ -1609,7 +1610,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, weightedListRandomNumberGenerator, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "2"
@@ -2031,7 +2032,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, weightedListRandomNumberGenerator, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "gdfg"
