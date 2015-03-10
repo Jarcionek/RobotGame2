@@ -131,8 +131,8 @@ public class RobotGame {
                 name = inputReader.next();
                 repeatedName = false;
 
-                for (int j = 0; j < robots.size(); j++) {
-                    if (name.toLowerCase().equals(robots.get(j).getName().toLowerCase())) {
+                for (Robot robot : robots) {
+                    if (name.toLowerCase().equals(robot.getName().toLowerCase())) {
                         repeatedName = true;
                         outputPrinter.println("Another player has already chosen that name.");
                         break;
@@ -164,8 +164,8 @@ public class RobotGame {
             String possibilities[] = {"endurance", "e", "speed", "s", "attack", "a"};
 
             String result = "";
-            for (int j = 0; j < possibilities.length; j++) {
-                result += possibilities[j] + ", ";
+            for (String possibility : possibilities) {
+                result += possibility + ", ";
             }
             result = result.substring(0, result.length() - 2);
 
@@ -180,8 +180,8 @@ public class RobotGame {
                     outputPrinter.println("You have " + robots.get(i).getSkillPoints() + " skill points to allocate.");
                     String input = inputReader.next();
 
-                    for (int j = 0; j < possibilities.length; j++) {
-                        if (input.toLowerCase().equals(possibilities[j])) {
+                    for (String possibility : possibilities) {
+                        if (input.toLowerCase().equals(possibility)) {
                             incorrect_input = false;
                         }
                     }
@@ -507,13 +507,15 @@ public class RobotGame {
         allocateSkillPoints();
         placeRobotsOnTheMap();
 
-        for (int round = 1; true; round++) {
+        int round = 0;
+        while (true) {
+            round++;
             outputPrinter.println("=========\nRound " + round + "\n=========");
             popUp.show("Round " + round, "Round");
 
             for (int i = 0; i < numberOfPlayers; i++) { //player number
                 if (robots.get(i).getHP() > 0) { //if player alive
-                    robots.get(i).changeAP(robots.get(i).getSpeed()); //restore AP depepnding on Robot's speed
+                    robots.get(i).changeAP(robots.get(i).getSpeed()); //restore AP depending on Robot's speed
                     unknownCommand = false;
                     displayMap = true;
 
