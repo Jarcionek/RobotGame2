@@ -23,22 +23,22 @@ public class RobotGame {
     private final OutputPrinter outputPrinter;
     private final PopUp popUp;
     private final RandomNumberGenerator bonusRandomNumberGenerator;
-    private final RandomNumberGenerator playerOrderRandomNumberGenerator;
     private final ProgramTerminator programTerminator;
+    private final ListShuffler listShuffler;
 
     public RobotGame(InputReader inputReader,
                      OutputPrinter outputPrinter,
                      PopUp popUp,
                      WeightedList<Bonus> bonuses,
                      RandomNumberGenerator bonusRandomNumberGenerator,
-                     RandomNumberGenerator playerOrderRandomNumberGenerator,
-                     ProgramTerminator programTerminator) {
+                     ProgramTerminator programTerminator,
+                     ListShuffler listShuffler) {
         this.inputReader = inputReader;
         this.outputPrinter = outputPrinter;
         this.popUp = popUp;
         this.bonusRandomNumberGenerator = bonusRandomNumberGenerator;
-        this.playerOrderRandomNumberGenerator = playerOrderRandomNumberGenerator;
         this.programTerminator = programTerminator;
+        this.listShuffler = listShuffler;
 
         this.bonuses = bonuses;
     }
@@ -124,7 +124,7 @@ public class RobotGame {
 
         for (int i = 1; i <= numberOfPlayers; i++) {
             String name;
-            boolean repeatedName = false;
+            boolean repeatedName;
 
             do {
                 outputPrinter.print("Enter " + i + ". robot's name: ");
@@ -146,13 +146,7 @@ public class RobotGame {
     }
 
     private void randomizePlayersOrder() {
-        for (int i = 0; i < numberOfPlayers * numberOfPlayers; i++) {
-            int choiceOne = playerOrderRandomNumberGenerator.nextInt(numberOfPlayers);
-            int choiceTwo = playerOrderRandomNumberGenerator.nextInt(numberOfPlayers);
-            Robot x = robots.get(choiceOne);
-            robots.set(choiceOne, robots.get(choiceTwo));
-            robots.set(choiceTwo, x);
-        }
+        robots = listShuffler.shuffle(robots);
     }
 
     private void allocateSkillPoints() {

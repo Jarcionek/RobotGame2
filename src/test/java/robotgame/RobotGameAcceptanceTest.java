@@ -6,6 +6,10 @@ import robotgame.io.OutputPrinter;
 import robotgame.io.PopUp;
 import robotgame.io.ProgramTerminator;
 
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -24,10 +28,10 @@ public class RobotGameAcceptanceTest {
     private final PopUp popUp = spy(new VerbosePopUp("popUp"));
     private final AvailableBonuses availableBonuses = mock(AvailableBonuses.class);
     private final VerboseFakeRandomNumberGenerator bonusRandomNumberGenerator = spy(new VerboseFakeRandomNumberGenerator("bonusRandomNumberGenerator"));
-    private final VerboseFakeRandomNumberGenerator playerOrderRandomNumberGenerator = spy(new VerboseFakeRandomNumberGenerator("playerOrderRandomNumberGenerator"));
     private final ProgramTerminator programTerminator = spy(new VerboseProgramTerminator("programTerminator"));
+    private final ListShuffler listShuffler = mock(ListShuffler.class);
 
-    private final RobotGame robotGame = new RobotGame(inputReader, outputPrinter, popUp, availableBonuses, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+    private final RobotGame robotGame = new RobotGame(inputReader, outputPrinter, popUp, availableBonuses, bonusRandomNumberGenerator, programTerminator, listShuffler);
 
     @Test
     public void playsSimpleGame() {
@@ -66,15 +70,7 @@ public class RobotGameAcceptanceTest {
                 // first round, first player
                 .willReturn("a");
 
-        playerOrderRandomNumberGenerator
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0);
+        listShufflerWillReturnOriginalList();
 
         bonusRandomNumberGenerator
                 .willReturn(76)
@@ -87,7 +83,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "2"
@@ -99,7 +95,6 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(inputReader).next(); // -> "One"
         inOrder.verify(outputPrinter).print("Enter 2. robot's name: ");
         inOrder.verify(inputReader).next(); // -> "Two"
-        inOrder.verify(playerOrderRandomNumberGenerator, times(8)).nextInt(2); // -> 0, 1, 0, 0, 0, 1, 0, 0
         inOrder.verify(outputPrinter).println("===================================");
         inOrder.verify(outputPrinter).println("Allocate One's skill points.");
         inOrder.verify(popUp).show("Allocate One's skill points.", "Allocate skill points");
@@ -388,40 +383,17 @@ public class RobotGameAcceptanceTest {
                 .willReturn("r")
                 .willReturn("a"); // kill first player
 
-        playerOrderRandomNumberGenerator
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(1)
-                .willReturn(3)
-                .willReturn(3)
-                .willReturn(1)
-                .willReturn(3)
-                .willReturn(2)
-                .willReturn(1)
-                .willReturn(3)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(2)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(2)
-                .willReturn(1)
-                .willReturn(1)
-                .willReturn(2)
-                .willReturn(3)
-                .willReturn(2)
-                .willReturn(0)
-                .willReturn(3)
-                .willReturn(0)
-                .willReturn(3);
-        
+        when(listShuffler.shuffle(any())).thenAnswer(shuffleMethodCall -> {
+            @SuppressWarnings("unchecked") List<Robot> robots = (List<Robot>) shuffleMethodCall.getArguments()[0];
+
+            return newArrayList(
+                    robots.get(0),
+                    robots.get(3),
+                    robots.get(2),
+                    robots.get(1)
+            );
+        });
+
         bonusRandomNumberGenerator
                 .willReturn(99)
                 .willReturn(2)
@@ -442,7 +414,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "4"
@@ -458,39 +430,6 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(inputReader).next(); // -> "Three"
         inOrder.verify(outputPrinter).print("Enter 4. robot's name: ");
         inOrder.verify(inputReader).next(); // -> "Four"
-        inOrder.verify(playerOrderRandomNumberGenerator, times(32)).nextInt(4);
-                // -> 1
-                // -> 0
-                // -> 1
-                // -> 1
-                // -> 3
-                // -> 3
-                // -> 1
-                // -> 3
-                // -> 2
-                // -> 1
-                // -> 3
-                // -> 1
-                // -> 0
-                // -> 0
-                // -> 0
-                // -> 1
-                // -> 2
-                // -> 1
-                // -> 0
-                // -> 0
-                // -> 0
-                // -> 0
-                // -> 2
-                // -> 1
-                // -> 1
-                // -> 2
-                // -> 3
-                // -> 2
-                // -> 0
-                // -> 3
-                // -> 0
-                // -> 3
         inOrder.verify(outputPrinter).println("===================================");
         inOrder.verify(outputPrinter).println("Allocate One's skill points.");
         inOrder.verify(popUp).show("Allocate One's skill points.", "Allocate skill points");
@@ -1630,15 +1569,7 @@ public class RobotGameAcceptanceTest {
                 .willReturn("h")
                 .willReturn("hit");
 
-        playerOrderRandomNumberGenerator
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0);
+        listShufflerWillReturnOriginalList();
 
         bonusRandomNumberGenerator
                 .willReturn(95)
@@ -1652,7 +1583,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "2"
@@ -1664,7 +1595,6 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(inputReader).next(); // -> "First Robot"
         inOrder.verify(outputPrinter).print("Enter 2. robot's name: ");
         inOrder.verify(inputReader).next(); // -> "Second Robot"
-        inOrder.verify(playerOrderRandomNumberGenerator, times(8)).nextInt(2); // -> 0, 1, 0, 0, 0, 1, 0, 0
         inOrder.verify(outputPrinter).println("===================================");
         inOrder.verify(outputPrinter).println("Allocate First Robot's skill points.");
         inOrder.verify(popUp).show("Allocate First Robot's skill points.", "Allocate skill points");
@@ -2053,15 +1983,7 @@ public class RobotGameAcceptanceTest {
                 .willReturn("a")
                 .willReturn("a");
 
-        playerOrderRandomNumberGenerator
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0);
+        listShufflerWillReturnOriginalList();
 
         bonusRandomNumberGenerator
                 .willReturn(95)
@@ -2075,7 +1997,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "gdfg"
@@ -2114,7 +2036,6 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(outputPrinter).println("Another player has already chosen that name.");
         inOrder.verify(outputPrinter).print("Enter 2. robot's name: ");
         inOrder.verify(inputReader).next(); // -> "Another Robot Name"
-        inOrder.verify(playerOrderRandomNumberGenerator, times(8)).nextInt(2); // -> 0, 1, 0, 0, 0, 1, 0, 0
         inOrder.verify(outputPrinter).println("===================================");
         inOrder.verify(outputPrinter).println("Allocate Robot Name's skill points.");
         inOrder.verify(popUp).show("Allocate Robot Name's skill points.", "Allocate skill points");
@@ -2390,15 +2311,7 @@ public class RobotGameAcceptanceTest {
                 .willReturn("r")
                 .willReturn("a");
 
-        playerOrderRandomNumberGenerator
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(0)
-                .willReturn(1)
-                .willReturn(0)
-                .willReturn(0);
+        listShufflerWillReturnOriginalList();
 
         bonusRandomNumberGenerator
                         // bonus 1
@@ -2440,7 +2353,7 @@ public class RobotGameAcceptanceTest {
         } catch (TestPassed ignored) {}
 
         // then
-        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, programTerminator);
 
         inOrder.verify(outputPrinter).print("Enter the number of players: ");
         inOrder.verify(inputReader).next(); // -> "2"
@@ -2452,7 +2365,6 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(inputReader).next(); // -> "Player One"
         inOrder.verify(outputPrinter).print("Enter 2. robot's name: ");
         inOrder.verify(inputReader).next(); // -> "Player Two"
-        inOrder.verify(playerOrderRandomNumberGenerator, times(8)).nextInt(2); // -> 0, 1, 0, 0, 0, 1, 0, 0
         inOrder.verify(outputPrinter).println("===================================");
         inOrder.verify(outputPrinter).println("Allocate Player One's skill points.");
         inOrder.verify(popUp).show("Allocate Player One's skill points.", "Allocate skill points");
@@ -2903,6 +2815,10 @@ public class RobotGameAcceptanceTest {
                 "");
         inOrder.verify(popUp).show("PLAYER TWO IS A WINNER!", "VICTORY");
         inOrder.verify(programTerminator).exit();
+    }
+
+    private void listShufflerWillReturnOriginalList() {
+        when(listShuffler.shuffle(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
     }
 
 }
