@@ -1551,7 +1551,7 @@ public class RobotGameAcceptanceTest {
                         // attributes of second player
                 .willReturn("a")
                 .willReturn("a")
-                .willReturn("s")
+                .willReturn("e")
                 .willReturn("s")
                 .willReturn("s")
                 .willReturn("") // nextLine()
@@ -1662,14 +1662,14 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(inputReader).next(); // -> "a"
         inOrder.verify(outputPrinter).println("Your attack is 3 now.");
         inOrder.verify(outputPrinter).println("You have 3 skill points to allocate.");
-        inOrder.verify(inputReader).next(); // -> "s"
-        inOrder.verify(outputPrinter).println("Your speed is 6 now.");
+        inOrder.verify(inputReader).next(); // -> "e"
+        inOrder.verify(outputPrinter).println("Your endurance is 4 now.");
         inOrder.verify(outputPrinter).println("You have 2 skill points to allocate.");
         inOrder.verify(inputReader).next(); // -> "s"
-        inOrder.verify(outputPrinter).println("Your speed is 7 now.");
+        inOrder.verify(outputPrinter).println("Your speed is 6 now.");
         inOrder.verify(outputPrinter).println("You have 1 skill points to allocate.");
         inOrder.verify(inputReader).next(); // -> "s"
-        inOrder.verify(outputPrinter).println("Your speed is 8 now.");
+        inOrder.verify(outputPrinter).println("Your speed is 7 now.");
         inOrder.verify(inputReader).nextLine(); // -> ""
         inOrder.verify(outputPrinter).println("===================================");
         inOrder.verify(outputPrinter).print("+----------+" + "\n" +
@@ -1863,7 +1863,7 @@ public class RobotGameAcceptanceTest {
                 "+----------+" + "\n" +
                 "");
         inOrder.verify(popUp).show("0 - First Robot: (1;2) faces north, 6 HP, 3 endurance, 5 speed, 6 attack." + "\n" +
-                "1 - Second Robot: (1;3) faces south, 6 HP, 3 endurance, 8 speed, 3 attack." + "\n" +
+                "1 - Second Robot: (1;3) faces south, 8 HP, 4 endurance, 7 speed, 3 attack." + "\n" +
                 "", "Players' informations");
         inOrder.verify(outputPrinter).print("+----------+" + "\n" +
                 "|..........|" + "\n" +
@@ -1900,12 +1900,12 @@ public class RobotGameAcceptanceTest {
                 "|..........|" + "\n" +
                 "+----------+" + "\n" +
                 "");
-        inOrder.verify(outputPrinter).println("Second Robot's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Second Robot's turn. 8 HP");
         inOrder.verify(outputPrinter).println("Current position: (1;3) faces south");
-        inOrder.verify(outputPrinter).println("8 AP left.");
+        inOrder.verify(outputPrinter).println("7 AP left.");
         inOrder.verify(inputReader).next(); // -> "h"
         inOrder.verify(outputPrinter).println("Your robot hits First Robot for 3 HP");
-        inOrder.verify(outputPrinter).println("First Robot's HP is 3. 7 AP left.");
+        inOrder.verify(outputPrinter).println("First Robot's HP is 3. 6 AP left.");
         inOrder.verify(inputReader).next(); // -> "hit"
         inOrder.verify(outputPrinter).print("+----------+" + "\n" +
                 "|..........|" + "\n" +
