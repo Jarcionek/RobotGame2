@@ -9,6 +9,7 @@ import robotgame.io.ProgramTerminator;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class RobotGameAcceptanceTest {
@@ -2274,6 +2275,589 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(outputPrinter).print("" + "\n" +
                 "");
         inOrder.verify(popUp).show("ANOTHER ROBOT NAME IS A WINNER!", "VICTORY");
+        inOrder.verify(programTerminator).exit();
+    }
+
+    @Test
+    public void playsGameWithCollectingBonuses() {
+        // given
+        inputReader
+                .willReturn("2") // number of players
+                .willReturn("10") // width
+                .willReturn("10") // height
+                        // players' names
+                .willReturn("Player One")
+                .willReturn("Player Two")
+                        // attributes of first player
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("") // nextLine()
+                        // attributes of second player
+                .willReturn("e")
+                .willReturn("e")
+                .willReturn("e")
+                .willReturn("e")
+                .willReturn("e")
+                .willReturn("") // nextLine()
+                        // starting position of first player
+                .willReturn("1")
+                .willReturn("1")
+                .willReturn("north")
+                .willReturn("") // nextLine()
+                        // starting position of second player
+                .willReturn("1")
+                .willReturn("3")
+                .willReturn("east")
+                .willReturn("") // nextLine()
+                        // first round, first player
+                .willReturn("m")
+                .willReturn("a")
+                .willReturn("skip")
+                .willReturn("yes")
+                .willReturn("") // nextLine()
+                        // first round, second player
+                .willReturn("m")
+                .willReturn("skip")
+                .willReturn("yes")
+                .willReturn("") // nextLine()
+                        // second round, first player
+                .willReturn("r")
+                .willReturn("m")
+                .willReturn("skip")
+                .willReturn("yes")
+                .willReturn("") // nextLine()
+                        // second round, second player
+                .willReturn("m")
+                .willReturn("skip")
+                .willReturn("yes")
+                .willReturn("") // nextLine()
+                        // third round, first player
+                .willReturn("m")
+                .willReturn("skip")
+                .willReturn("yes")
+                .willReturn("") // nextLine()
+                        // third round, second player
+                .willReturn("m")
+                .willReturn("r")
+                .willReturn("m")
+                .willReturn("r")
+                .willReturn("a");
+
+        playerOrderRandomNumberGenerator
+                .willReturn(0)
+                .willReturn(1)
+                .willReturn(0)
+                .willReturn(0)
+                .willReturn(0)
+                .willReturn(1)
+                .willReturn(0)
+                .willReturn(0);
+
+        bonusRandomNumberGenerator
+                        // bonus 1
+                .willReturn(0)
+                .willReturn(0)
+                .willReturn(1)
+                        // bonus 2
+                .willReturn(0)
+                .willReturn(1)
+                .willReturn(2)
+                        // bonus 3
+                .willReturn(0)
+                .willReturn(1)
+                .willReturn(1)
+                        // bonus 4
+                .willReturn(0)
+                .willReturn(2)
+                .willReturn(2)
+                        // bonus 5
+                .willReturn(0)
+                .willReturn(2)
+                .willReturn(1)
+                        // bonus 6
+                .willReturn(0)
+                .willReturn(3)
+                .willReturn(2);
+
+        when(availableBonuses.getRandom())
+                .thenReturn("05speed")
+                .thenReturn("05HP")
+                .thenReturn("10AP")
+                .thenReturn("80HP")
+                .thenReturn("01endurance")
+                .thenReturn("05attack");
+
+        // when
+        try {
+            robotGame.start();
+        } catch (TestPassed ignored) {}
+
+        // then
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+
+        inOrder.verify(outputPrinter).print("Enter the number of players: ");
+        inOrder.verify(inputReader).next(); // -> "2"
+        inOrder.verify(outputPrinter).print("Enter map's width: ");
+        inOrder.verify(inputReader).next(); // -> "10"
+        inOrder.verify(outputPrinter).print("Enter map's height: ");
+        inOrder.verify(inputReader).next(); // -> "10"
+        inOrder.verify(outputPrinter).print("Enter 1. robot's name: ");
+        inOrder.verify(inputReader).next(); // -> "Player One"
+        inOrder.verify(outputPrinter).print("Enter 2. robot's name: ");
+        inOrder.verify(inputReader).next(); // -> "Player Two"
+        inOrder.verify(playerOrderRandomNumberGenerator, times(8)).nextInt(2); // -> 0, 1, 0, 0, 0, 1, 0, 0
+        inOrder.verify(outputPrinter).println("===================================");
+        inOrder.verify(outputPrinter).println("Allocate Player One's skill points.");
+        inOrder.verify(popUp).show("Allocate Player One's skill points.", "Allocate skill points");
+        inOrder.verify(outputPrinter).println("By default, each robot has 3 endurance, 5 speed and 1 attack.");
+        inOrder.verify(outputPrinter).println("Each point added to endurance increases your HP by 2 points.");
+        inOrder.verify(outputPrinter).println("Each point added to speed increases your AP by 1 point.");
+        inOrder.verify(outputPrinter).println("Each point added to attack increases dealing damages by 1 point.");
+        inOrder.verify(outputPrinter).println("Which skill you would like to add point to?");
+        inOrder.verify(outputPrinter).println("TIP: instead of writing entire skill name," + "\n" +
+                "you can just write its first letter.");
+        inOrder.verify(outputPrinter).println("You have 5 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 2 now.");
+        inOrder.verify(outputPrinter).println("You have 4 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 3 now.");
+        inOrder.verify(outputPrinter).println("You have 3 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 4 now.");
+        inOrder.verify(outputPrinter).println("You have 2 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 5 now.");
+        inOrder.verify(outputPrinter).println("You have 1 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 6 now.");
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).println("===================================");
+        inOrder.verify(outputPrinter).println("Allocate Player Two's skill points.");
+        inOrder.verify(popUp).show("Allocate Player Two's skill points.", "Allocate skill points");
+        inOrder.verify(outputPrinter).println("By default, each robot has 3 endurance, 5 speed and 1 attack.");
+        inOrder.verify(outputPrinter).println("Each point added to endurance increases your HP by 2 points.");
+        inOrder.verify(outputPrinter).println("Each point added to speed increases your AP by 1 point.");
+        inOrder.verify(outputPrinter).println("Each point added to attack increases dealing damages by 1 point.");
+        inOrder.verify(outputPrinter).println("Which skill you would like to add point to?");
+        inOrder.verify(outputPrinter).println("TIP: instead of writing entire skill name," + "\n" +
+                "you can just write its first letter.");
+        inOrder.verify(outputPrinter).println("You have 5 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "e"
+        inOrder.verify(outputPrinter).println("Your endurance is 4 now.");
+        inOrder.verify(outputPrinter).println("You have 4 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "e"
+        inOrder.verify(outputPrinter).println("Your endurance is 5 now.");
+        inOrder.verify(outputPrinter).println("You have 3 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "e"
+        inOrder.verify(outputPrinter).println("Your endurance is 6 now.");
+        inOrder.verify(outputPrinter).println("You have 2 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "e"
+        inOrder.verify(outputPrinter).println("Your endurance is 7 now.");
+        inOrder.verify(outputPrinter).println("You have 1 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "e"
+        inOrder.verify(outputPrinter).println("Your endurance is 8 now.");
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).println("===================================");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).print("Enter Player One's X coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "1"
+        inOrder.verify(outputPrinter).print("Enter Player One's Y coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "1"
+        inOrder.verify(outputPrinter).print("Enter Player One's facing direction: ");
+        inOrder.verify(inputReader).next(); // -> "north"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|#.........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).print("Enter Player Two's X coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "1"
+        inOrder.verify(outputPrinter).print("Enter Player Two's Y coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "3"
+        inOrder.verify(outputPrinter).print("Enter Player Two's facing direction: ");
+        inOrder.verify(inputReader).next(); // -> "east"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).println("=========" + "\n" +
+                "Round 1" + "\n" +
+                "=========");
+        inOrder.verify(popUp).show("Round 1", "Round");
+        inOrder.verify(popUp).show("Player One's turn.", "Turn");
+        inOrder.verify(bonusRandomNumberGenerator).nextInt(100); // -> 0
+        inOrder.verify(bonusRandomNumberGenerator, times(2)).nextInt(10); // -> 0, 1
+        inOrder.verify(popUp).show("New bonus has appeared at (1;2)!", "New bonus!");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|#.........|" + "\n" +
+                "|$.........|" + "\n" +
+                "|O.........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player One's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (1;1) faces north");
+        inOrder.verify(outputPrinter).println("5 AP left.");
+        inOrder.verify(inputReader).next(); // -> "m"
+        inOrder.verify(outputPrinter).println("Your speed has been increased by 5. Your current speed is 10.");
+        inOrder.verify(popUp).show("Your speed has been increased by 5. Your current speed is 10.", "Bonus taken");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|#.........|" + "\n" +
+                "|O.........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player One's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (1;2) faces north");
+        inOrder.verify(outputPrinter).println("4 AP left.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your robot hits Player Two for 6 HP");
+        inOrder.verify(outputPrinter).println("Player Two's HP is 10. 3 AP left.");
+        inOrder.verify(inputReader).next(); // -> "skip"
+        inOrder.verify(outputPrinter).println("Are you sure that you want to skip your turn?");
+        inOrder.verify(inputReader).next(); // -> "yes"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(popUp).show("Player Two's turn.", "Turn");
+        inOrder.verify(bonusRandomNumberGenerator).nextInt(100); // -> 0
+        inOrder.verify(bonusRandomNumberGenerator, times(2)).nextInt(10); // -> 1, 2
+        inOrder.verify(popUp).show("New bonus has appeared at (2;3)!", "New bonus!");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|O$........|" + "\n" +
+                "|#.........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 10 HP");
+        inOrder.verify(outputPrinter).println("Current position: (1;3) faces east");
+        inOrder.verify(outputPrinter).println("5 AP left.");
+        inOrder.verify(inputReader).next(); // -> "m"
+        inOrder.verify(outputPrinter).println("You have been healed for 5 points. Your current HP is 15.");
+        inOrder.verify(popUp).show("You have been healed for 5 points. Your current HP is 15.", "Bonus taken");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|.O........|" + "\n" +
+                "|#.........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 15 HP");
+        inOrder.verify(outputPrinter).println("Current position: (2;3) faces east");
+        inOrder.verify(outputPrinter).println("4 AP left.");
+        inOrder.verify(inputReader).next(); // -> "skip"
+        inOrder.verify(outputPrinter).println("Are you sure that you want to skip your turn?");
+        inOrder.verify(inputReader).next(); // -> "yes"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).println("=========" + "\n" +
+                "Round 2" + "\n" +
+                "=========");
+        inOrder.verify(popUp).show("Round 2", "Round");
+        inOrder.verify(popUp).show("Player One's turn.", "Turn");
+        inOrder.verify(bonusRandomNumberGenerator).nextInt(100); // -> 0
+        inOrder.verify(bonusRandomNumberGenerator, times(2)).nextInt(10); // -> 1, 1
+        inOrder.verify(popUp).show("New bonus has appeared at (2;2)!", "New bonus!");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|.#........|" + "\n" +
+                "|O$........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player One's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (1;2) faces north");
+        inOrder.verify(outputPrinter).println("10 AP left.");
+        inOrder.verify(inputReader).next(); // -> "r"
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|.#........|" + "\n" +
+                "|O$........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player One's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (1;2) faces east");
+        inOrder.verify(outputPrinter).println("9 AP left.");
+        inOrder.verify(inputReader).next(); // -> "m"
+        inOrder.verify(outputPrinter).println("10 action points added. 18 AP left.");
+        inOrder.verify(popUp).show("10 action points added. 18 AP left.", "Bonus taken");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|.#........|" + "\n" +
+                "|.O........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player One's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (2;2) faces east");
+        inOrder.verify(outputPrinter).println("18 AP left.");
+        inOrder.verify(inputReader).next(); // -> "skip"
+        inOrder.verify(outputPrinter).println("Are you sure that you want to skip your turn?");
+        inOrder.verify(inputReader).next(); // -> "yes"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(popUp).show("Player Two's turn.", "Turn");
+        inOrder.verify(bonusRandomNumberGenerator).nextInt(100); // -> 0
+        inOrder.verify(bonusRandomNumberGenerator, times(2)).nextInt(10); // -> 2, 2
+        inOrder.verify(popUp).show("New bonus has appeared at (3;3)!", "New bonus!");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|.O$.......|" + "\n" +
+                "|.#........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 15 HP");
+        inOrder.verify(outputPrinter).println("Current position: (2;3) faces east");
+        inOrder.verify(outputPrinter).println("5 AP left.");
+        inOrder.verify(inputReader).next(); // -> "m"
+        inOrder.verify(outputPrinter).println("You have been completely healed.");
+        inOrder.verify(popUp).show("You have been completely healed.", "Bonus taken");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..O.......|" + "\n" +
+                "|.#........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 16 HP");
+        inOrder.verify(outputPrinter).println("Current position: (3;3) faces east");
+        inOrder.verify(outputPrinter).println("4 AP left.");
+        inOrder.verify(inputReader).next(); // -> "skip"
+        inOrder.verify(outputPrinter).println("Are you sure that you want to skip your turn?");
+        inOrder.verify(inputReader).next(); // -> "yes"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).println("=========" + "\n" +
+                "Round 3" + "\n" +
+                "=========");
+        inOrder.verify(popUp).show("Round 3", "Round");
+        inOrder.verify(popUp).show("Player One's turn.", "Turn");
+        inOrder.verify(bonusRandomNumberGenerator).nextInt(100); // -> 0
+        inOrder.verify(bonusRandomNumberGenerator, times(2)).nextInt(10); // -> 2, 1
+        inOrder.verify(popUp).show("New bonus has appeared at (3;2)!", "New bonus!");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..#.......|" + "\n" +
+                "|.O$.......|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player One's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (2;2) faces east");
+        inOrder.verify(outputPrinter).println("10 AP left.");
+        inOrder.verify(inputReader).next(); // -> "m"
+        inOrder.verify(outputPrinter).println("Your endurance has been increased by 1. Your current endurance is 4.");
+        inOrder.verify(popUp).show("Your endurance has been increased by 1. Your current endurance is 4.", "Bonus taken");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..#.......|" + "\n" +
+                "|..O.......|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player One's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (3;2) faces east");
+        inOrder.verify(outputPrinter).println("9 AP left.");
+        inOrder.verify(inputReader).next(); // -> "skip"
+        inOrder.verify(outputPrinter).println("Are you sure that you want to skip your turn?");
+        inOrder.verify(inputReader).next(); // -> "yes"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(popUp).show("Player Two's turn.", "Turn");
+        inOrder.verify(bonusRandomNumberGenerator).nextInt(100); // -> 0
+        inOrder.verify(bonusRandomNumberGenerator, times(2)).nextInt(10); // -> 3, 2
+        inOrder.verify(popUp).show("New bonus has appeared at (4;3)!", "New bonus!");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..O$......|" + "\n" +
+                "|..#.......|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 16 HP");
+        inOrder.verify(outputPrinter).println("Current position: (3;3) faces east");
+        inOrder.verify(outputPrinter).println("5 AP left.");
+        inOrder.verify(inputReader).next(); // -> "m"
+        inOrder.verify(outputPrinter).println("Your atack has been increased by 5. Your current attack is 6.");
+        inOrder.verify(popUp).show("Your atack has been increased by 5. Your current attack is 6.", "Bonus taken");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|...O......|" + "\n" +
+                "|..#.......|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 16 HP");
+        inOrder.verify(outputPrinter).println("Current position: (4;3) faces east");
+        inOrder.verify(outputPrinter).println("4 AP left.");
+        inOrder.verify(inputReader).next(); // -> "r"
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|...O......|" + "\n" +
+                "|..#.......|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 16 HP");
+        inOrder.verify(outputPrinter).println("Current position: (4;3) faces south");
+        inOrder.verify(outputPrinter).println("3 AP left.");
+        inOrder.verify(inputReader).next(); // -> "m"
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..#O......|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 16 HP");
+        inOrder.verify(outputPrinter).println("Current position: (4;2) faces south");
+        inOrder.verify(outputPrinter).println("2 AP left.");
+        inOrder.verify(inputReader).next(); // -> "r"
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..#O......|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Player Two's turn. 16 HP");
+        inOrder.verify(outputPrinter).println("Current position: (4;2) faces west");
+        inOrder.verify(outputPrinter).println("1 AP left.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|...O......|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).print("Your robot kills Player One. ");
+        inOrder.verify(popUp).show("Your robot kills Player One! ", "One less!");
+        inOrder.verify(outputPrinter).print("" + "\n" +
+                "");
+        inOrder.verify(popUp).show("PLAYER TWO IS A WINNER!", "VICTORY");
         inOrder.verify(programTerminator).exit();
     }
 
