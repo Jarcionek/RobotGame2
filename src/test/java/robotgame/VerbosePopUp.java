@@ -10,7 +10,7 @@ public class VerbosePopUp extends PopUp {
 
     @Override
     public void show(String message, String title) {
-        System.out.println(String.format("%s.show(\"%s\", \"%s\");", name, message, title));
+        System.out.println(String.format("%s.show(\"%s\", \"%s\");", name, message.replaceAll("\\n", "\" \\+ \"\\\\n\" \\+\n\t\t\""), title));
     }
 
 }
