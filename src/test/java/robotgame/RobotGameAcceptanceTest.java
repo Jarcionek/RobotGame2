@@ -379,6 +379,7 @@ public class RobotGameAcceptanceTest {
                 .willReturn("") // nextLine()
 
                         // third round, fourth player
+                .willReturn("scan")
                 .willReturn("r")
                 .willReturn("a"); // kill first player
 
@@ -1494,6 +1495,41 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(outputPrinter).println("Two's turn. 6 HP");
         inOrder.verify(outputPrinter).println("Current position: (5;5) faces north");
         inOrder.verify(outputPrinter).println("5 AP left.");
+        inOrder.verify(inputReader).next(); // -> "scan"
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|....30....|" + "\n" +
+                "|..........|" + "\n" +
+                "|..$.......|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(popUp).show("0 - One: (6;5) faces south, 6 HP, 3 endurance, 5 speed, 6 attack." + "\n" +
+                "1 - Four: DEAD 3 endurance, 5 speed, 6 attack." + "\n" +
+                "2 - Three: DEAD 3 endurance, 5 speed, 6 attack." + "\n" +
+                "3 - Two: (5;5) faces north, 6 HP, 3 endurance, 5 speed, 6 attack." + "\n" +
+                "", "Players' informations");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|....O#....|" + "\n" +
+                "|..........|" + "\n" +
+                "|..$.......|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Two's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (5;5) faces north");
+        inOrder.verify(outputPrinter).println("5 AP left.");
         inOrder.verify(inputReader).next(); // -> "r"
         inOrder.verify(outputPrinter).print("+----------+" + "\n" +
                 "|..........|" + "\n" +
@@ -2008,6 +2044,7 @@ public class RobotGameAcceptanceTest {
 
                         // first round, second player
                 .willReturn("unknownCommand")
+                .willReturn("m")
                 .willReturn("a")
                 .willReturn("a");
 
@@ -2253,6 +2290,8 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(outputPrinter).println("7 AP left.");
         inOrder.verify(inputReader).next(); // -> "unknownCommand"
         inOrder.verify(outputPrinter).println("Unknown command. Your robot understand only following commands: skip, move, m, left, l, right, r, hit, h, attack, a, scan, s, help, ?");
+        inOrder.verify(inputReader).next(); // -> "m"
+        inOrder.verify(outputPrinter).println("There is an obstacle in front of your robot preventing it from moving forward.");
         inOrder.verify(inputReader).next(); // -> "a"
         inOrder.verify(outputPrinter).println("Your robot hits Robot Name for 4 HP");
         inOrder.verify(outputPrinter).println("Robot Name's HP is 2. 6 AP left.");
