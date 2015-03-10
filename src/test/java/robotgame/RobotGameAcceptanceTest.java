@@ -1928,4 +1928,349 @@ public class RobotGameAcceptanceTest {
         inOrder.verify(programTerminator).exit();
     }
 
+    @Test
+    public void playsGameWithInvalidCommands() {
+        // given
+        inputReader
+                        // number of players
+                .willReturn("gdfg")
+                .willReturn("10000")
+                .willReturn("2")
+
+                        // width
+                .willReturn("dsgsg")
+                .willReturn("123456")
+                .willReturn("2")
+                .willReturn("10")
+
+                        // height
+                .willReturn("hdhdh")
+                .willReturn("999999")
+                .willReturn("3")
+                .willReturn("10")
+
+                        // players' names
+                .willReturn("Robot Name")
+                .willReturn("Robot Name") // invalid
+                .willReturn("Another Robot Name")
+
+                        // attributes of first player
+                .willReturn("invalidSkill")
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("") // nextLine()
+
+                        // attributes of second player
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("a")
+                .willReturn("s")
+                .willReturn("s")
+                .willReturn("") // nextLine()
+
+                        // starting position of first player
+                        // X
+                .willReturn("abc")
+                .willReturn("456")
+                .willReturn("1")
+                        // Y
+                .willReturn("abc")
+                .willReturn("99")
+                .willReturn("1")
+                        // direction
+                .willReturn("nonExistingDirection")
+                .willReturn("east")
+                .willReturn("") // nextLine()
+
+                        // starting position of second player
+                        // already used position
+                .willReturn("1")
+                .willReturn("1")
+                        // correct position
+                .willReturn("1")
+                .willReturn("2")
+                .willReturn("south")
+                .willReturn("") // nextLine()
+
+                        // first round, first player
+                .willReturn("a") // nothing in front
+                .willReturn("skip")
+                .willReturn("yes")
+                .willReturn("") // nextLine()
+
+                        // first round, second player
+                .willReturn("unknownCommand")
+                .willReturn("a")
+                .willReturn("a");
+
+        playerOrderRandomNumberGenerator
+                .willReturn(0)
+                .willReturn(1)
+                .willReturn(0)
+                .willReturn(0)
+                .willReturn(0)
+                .willReturn(1)
+                .willReturn(0)
+                .willReturn(0);
+
+        bonusRandomNumberGenerator
+                .willReturn(95)
+                .willReturn(5)
+                .willReturn(5)
+                .willReturn(95);
+
+        // when
+        try {
+            robotGame.start();
+        } catch (TestPassed ignored) {}
+
+        // then
+        InOrder inOrder = inOrder(inputReader, outputPrinter, popUp, weightedListRandomNumberGenerator, bonusRandomNumberGenerator, playerOrderRandomNumberGenerator, programTerminator);
+
+        inOrder.verify(outputPrinter).print("Enter the number of players: ");
+        inOrder.verify(inputReader).next(); // -> "gdfg"
+        inOrder.verify(outputPrinter).println("Incorrect value. Only digits are allowed.");
+        inOrder.verify(outputPrinter).print("Enter the number of players: ");
+        inOrder.verify(inputReader).next(); // -> "10000"
+        inOrder.verify(outputPrinter).println("At least one player is required. Maximum 10 players.");
+        inOrder.verify(outputPrinter).print("Enter the number of players: ");
+        inOrder.verify(inputReader).next(); // -> "2"
+        inOrder.verify(outputPrinter).print("Enter map's width: ");
+        inOrder.verify(inputReader).next(); // -> "dsgsg"
+        inOrder.verify(outputPrinter).println("Incorrect value. Only digits are allowed.");
+        inOrder.verify(outputPrinter).print("Enter map's width: ");
+        inOrder.verify(inputReader).next(); // -> "123456"
+        inOrder.verify(outputPrinter).println("Map's width cannot be lower than 10 or bigger than 75.");
+        inOrder.verify(outputPrinter).print("Enter map's width: ");
+        inOrder.verify(inputReader).next(); // -> "2"
+        inOrder.verify(outputPrinter).println("Map's width cannot be lower than 10 or bigger than 75.");
+        inOrder.verify(outputPrinter).print("Enter map's width: ");
+        inOrder.verify(inputReader).next(); // -> "10"
+        inOrder.verify(outputPrinter).print("Enter map's height: ");
+        inOrder.verify(inputReader).next(); // -> "hdhdh"
+        inOrder.verify(outputPrinter).println("Incorrect value. Only digits are allowed.");
+        inOrder.verify(outputPrinter).print("Enter map's height: ");
+        inOrder.verify(inputReader).next(); // -> "999999"
+        inOrder.verify(outputPrinter).println("Map's height cannot be lower than 10 or bigger than 25.");
+        inOrder.verify(outputPrinter).print("Enter map's height: ");
+        inOrder.verify(inputReader).next(); // -> "3"
+        inOrder.verify(outputPrinter).println("Map's height cannot be lower than 10 or bigger than 25.");
+        inOrder.verify(outputPrinter).print("Enter map's height: ");
+        inOrder.verify(inputReader).next(); // -> "10"
+        inOrder.verify(outputPrinter).print("Enter 1. robot's name: ");
+        inOrder.verify(inputReader).next(); // -> "Robot Name"
+        inOrder.verify(outputPrinter).print("Enter 2. robot's name: ");
+        inOrder.verify(inputReader).next(); // -> "Robot Name"
+        inOrder.verify(outputPrinter).println("Another player has already chosen that name.");
+        inOrder.verify(outputPrinter).print("Enter 2. robot's name: ");
+        inOrder.verify(inputReader).next(); // -> "Another Robot Name"
+        inOrder.verify(playerOrderRandomNumberGenerator, times(8)).nextInt(2); // -> 0, 1, 0, 0, 0, 1, 0, 0
+        inOrder.verify(outputPrinter).println("===================================");
+        inOrder.verify(outputPrinter).println("Allocate Robot Name's skill points.");
+        inOrder.verify(popUp).show("Allocate Robot Name's skill points.", "Allocate skill points");
+        inOrder.verify(outputPrinter).println("By default, each robot has 3 endurance, 5 speed and 1 attack.");
+        inOrder.verify(outputPrinter).println("Each point added to endurance increases your HP by 2 points.");
+        inOrder.verify(outputPrinter).println("Each point added to speed increases your AP by 1 point.");
+        inOrder.verify(outputPrinter).println("Each point added to attack increases dealing damages by 1 point.");
+        inOrder.verify(outputPrinter).println("Which skill you would like to add point to?");
+        inOrder.verify(outputPrinter).println("TIP: instead of writing entire skill name," + "\n" +
+                "you can just write its first letter.");
+        inOrder.verify(outputPrinter).println("You have 5 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "invalidSkill"
+        inOrder.verify(outputPrinter).println("Incorrect skill.");
+        inOrder.verify(outputPrinter).println("You can allocate skill points to the following skills: endurance, e, speed, s, attack, a");
+        inOrder.verify(outputPrinter).println("You have 5 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 2 now.");
+        inOrder.verify(outputPrinter).println("You have 4 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 3 now.");
+        inOrder.verify(outputPrinter).println("You have 3 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 4 now.");
+        inOrder.verify(outputPrinter).println("You have 2 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 5 now.");
+        inOrder.verify(outputPrinter).println("You have 1 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 6 now.");
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).println("===================================");
+        inOrder.verify(outputPrinter).println("Allocate Another Robot Name's skill points.");
+        inOrder.verify(popUp).show("Allocate Another Robot Name's skill points.", "Allocate skill points");
+        inOrder.verify(outputPrinter).println("By default, each robot has 3 endurance, 5 speed and 1 attack.");
+        inOrder.verify(outputPrinter).println("Each point added to endurance increases your HP by 2 points.");
+        inOrder.verify(outputPrinter).println("Each point added to speed increases your AP by 1 point.");
+        inOrder.verify(outputPrinter).println("Each point added to attack increases dealing damages by 1 point.");
+        inOrder.verify(outputPrinter).println("Which skill you would like to add point to?");
+        inOrder.verify(outputPrinter).println("TIP: instead of writing entire skill name," + "\n" +
+                "you can just write its first letter.");
+        inOrder.verify(outputPrinter).println("You have 5 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 2 now.");
+        inOrder.verify(outputPrinter).println("You have 4 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 3 now.");
+        inOrder.verify(outputPrinter).println("You have 3 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your attack is 4 now.");
+        inOrder.verify(outputPrinter).println("You have 2 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "s"
+        inOrder.verify(outputPrinter).println("Your speed is 6 now.");
+        inOrder.verify(outputPrinter).println("You have 1 skill points to allocate.");
+        inOrder.verify(inputReader).next(); // -> "s"
+        inOrder.verify(outputPrinter).println("Your speed is 7 now.");
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).println("===================================");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).print("Enter Robot Name's X coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "abc"
+        inOrder.verify(outputPrinter).println("Incorrect value. Only digits are allowed.");
+        inOrder.verify(outputPrinter).print("Enter Robot Name's X coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "456"
+        inOrder.verify(outputPrinter).println("Out of map.");
+        inOrder.verify(outputPrinter).print("Enter Robot Name's X coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "1"
+        inOrder.verify(outputPrinter).print("Enter Robot Name's Y coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "abc"
+        inOrder.verify(outputPrinter).println("Incorrect value. Only digits are allowed.");
+        inOrder.verify(outputPrinter).print("Enter Robot Name's Y coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "99"
+        inOrder.verify(outputPrinter).println("Out of map.");
+        inOrder.verify(outputPrinter).print("Enter Robot Name's Y coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "1"
+        inOrder.verify(outputPrinter).print("Enter Robot Name's facing direction: ");
+        inOrder.verify(inputReader).next(); // -> "nonExistingDirection"
+        inOrder.verify(outputPrinter).println("Incorrect value. Your robot can only face north, east, south or west.");
+        inOrder.verify(outputPrinter).print("Enter Robot Name's facing direction: ");
+        inOrder.verify(inputReader).next(); // -> "east"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|#.........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).print("Enter Another Robot Name's X coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "1"
+        inOrder.verify(outputPrinter).print("Enter Another Robot Name's Y coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "1"
+        inOrder.verify(outputPrinter).println("There is already another robot.");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|#.........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).print("Enter Another Robot Name's X coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "1"
+        inOrder.verify(outputPrinter).print("Enter Another Robot Name's Y coordinate: ");
+        inOrder.verify(inputReader).next(); // -> "2"
+        inOrder.verify(outputPrinter).print("Enter Another Robot Name's facing direction: ");
+        inOrder.verify(inputReader).next(); // -> "south"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(outputPrinter).println("=========" + "\n" +
+                "Round 1" + "\n" +
+                "=========");
+        inOrder.verify(popUp).show("Round 1", "Round");
+        inOrder.verify(popUp).show("Robot Name's turn.", "Turn");
+        inOrder.verify(bonusRandomNumberGenerator).nextInt(100); // -> 95
+        inOrder.verify(bonusRandomNumberGenerator, times(2)).nextInt(10); // -> 5, 5
+        inOrder.verify(popUp).show("New bonus has appeared at (6;6)!", "New bonus!");
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|.....$....|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|#.........|" + "\n" +
+                "|O.........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Robot Name's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (1;1) faces east");
+        inOrder.verify(outputPrinter).println("5 AP left.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("There are no robots in front of you.");
+        inOrder.verify(inputReader).next(); // -> "skip"
+        inOrder.verify(outputPrinter).println("Are you sure that you want to skip your turn?");
+        inOrder.verify(inputReader).next(); // -> "yes"
+        inOrder.verify(inputReader).nextLine(); // -> ""
+        inOrder.verify(popUp).show("Another Robot Name's turn.", "Turn");
+        inOrder.verify(bonusRandomNumberGenerator).nextInt(100); // -> 95
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|.....$....|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|O.........|" + "\n" +
+                "|#.........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).println("Another Robot Name's turn. 6 HP");
+        inOrder.verify(outputPrinter).println("Current position: (1;2) faces south");
+        inOrder.verify(outputPrinter).println("7 AP left.");
+        inOrder.verify(inputReader).next(); // -> "unknownCommand"
+        inOrder.verify(outputPrinter).println("Unknown command. Your robot understand only following commands: skip, move, m, left, l, right, r, hit, h, attack, a, scan, s, help, ?");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).println("Your robot hits Robot Name for 4 HP");
+        inOrder.verify(outputPrinter).println("Robot Name's HP is 2. 6 AP left.");
+        inOrder.verify(inputReader).next(); // -> "a"
+        inOrder.verify(outputPrinter).print("+----------+" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|.....$....|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|..........|" + "\n" +
+                "|O.........|" + "\n" +
+                "|..........|" + "\n" +
+                "+----------+" + "\n" +
+                "");
+        inOrder.verify(outputPrinter).print("Your robot kills Robot Name. ");
+        inOrder.verify(popUp).show("Your robot kills Robot Name! ", "One less!");
+        inOrder.verify(outputPrinter).print("" + "\n" +
+                "");
+        inOrder.verify(popUp).show("ANOTHER ROBOT NAME IS A WINNER!", "VICTORY");
+        inOrder.verify(programTerminator).exit();
+    }
+
 }
