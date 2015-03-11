@@ -3,19 +3,19 @@ package robotgame;
 public class Bonus {
 
     private final Attribute attribute;
-    private final int modifier;
+    private final int delta;
 
-    public Bonus(Attribute attribute, int modifier) {
+    public Bonus(Attribute attribute, int delta) {
         this.attribute = attribute;
-        this.modifier = modifier;
+        this.delta = delta;
     }
 
     public Attribute getAttribute() {
         return attribute;
     }
 
-    public int getModifier() {
-        return modifier;
+    public int getDelta() {
+        return delta;
     }
 
 }

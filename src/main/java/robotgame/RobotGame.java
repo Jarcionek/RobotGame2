@@ -230,7 +230,7 @@ public class RobotGame {
         for (int i = 0; i < numberOfPlayers; i++) {
             int x = 0;
             int y = 0;
-            int direction = 0;
+            Direction direction = null;
             boolean incorrect_direction = false;
             boolean alreadyUsed = false;
 
@@ -281,20 +281,10 @@ public class RobotGame {
                 String input = inputReader.next().toLowerCase();
                 incorrect_direction = false;
 
-                if (input.equals("north") || input.equals("east") || input.equals("south") || input.equals("west") ||
-                        input.equals("up") || input.equals("right") || input.equals("down") || input.equals("left") ||
-                        input.equals("1") || input.equals("2") || input.equals("3") || input.equals("4")) {
+                try {
+                    direction = Direction.valueOf(input.toUpperCase());
+                } catch (IllegalArgumentException ex) {
 
-                    if (input.equals("north") || input.equals("up") || input.equals("1")) {
-                        direction = 1;
-                    } else if (input.equals("east") || input.equals("right") || input.equals("2")) {
-                        direction = 2;
-                    } else if (input.equals("south") || input.equals("down") || input.equals("3")) {
-                        direction = 3;
-                    } else {
-                        direction = 4;
-                    }
-                } else {
                     outputPrinter.println("Incorrect value. Your robot can only face north, east, south or west.");
                     incorrect_direction = true;
                 }
@@ -302,7 +292,7 @@ public class RobotGame {
             } while (incorrect_direction); //end get direction
 
             String antiCheat = inputReader.nextLine();
-            robots.get(i).place(x, y, direction); //despite robot was created after taking X and Y, it was done without direction (assigned north)
+            robots.get(i).place(x, y, direction);
         }
     }
 
@@ -321,7 +311,7 @@ public class RobotGame {
             numberOfBonusesOnTheMap--;
 
             Bonus bonus = bonuses.getRandom();
-            int amount = bonus.getModifier();
+            int amount = bonus.getDelta();
             Attribute attribute = bonus.getAttribute();
 
             if (attribute.equals(AP)) { //what kind of bonus is it
