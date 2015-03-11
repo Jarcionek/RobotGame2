@@ -1,11 +1,12 @@
 package robotgame;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Position (0;0) is printed as a bottom left hand corner.
  */
 public class RoboMap {
-
-    //TODO Jarek: grid here is unnecessary, map needs a list of bonuses (coordinates) and a list of robots (with their ids and coordinates)
 
     public static final char ROBOT_SYMBOL = '#';
     public static final char ACTIVE_ROBOT_SYMBOL = 'O';
@@ -18,6 +19,10 @@ public class RoboMap {
     private final int totalWidth;
     private final int totalHeight;
     private final char map[][];
+
+    private final Set<Coordinates> bonuses = new HashSet<>();
+
+    private Robots robots;
 
     public RoboMap(int width, int height) {
         totalWidth = width + 2;
@@ -46,6 +51,10 @@ public class RoboMap {
         }
     }
 
+    public void setRobots(Robots robots) {
+        this.robots = robots;
+    }
+
     public int getTotalWidth() {
         return totalWidth;
     }
@@ -67,33 +76,74 @@ public class RoboMap {
         if (robot.getX() != 0 && robot.getY() != 0) {
             map[robot.getX()][robot.getY()] = symbol;
         }
-
     }
 
     public void addBonus(int x, int y) {
+        if (bonuses.contains(new Coordinates(x, y))) {
+            throw new IllegalArgumentException(String.format("There is already a bonus at (%s,%s)", x, y));
+        }
+        bonuses.add(new Coordinates(x, y));
         map[x][y] = BONUS_SYMBOL;
     }
 
     public void destroyBonus(int x, int y) {
+        if (!bonuses.contains(new Coordinates(x, y))) {
+            throw new IllegalArgumentException(String.format("No bonus at (%s,%s), bonuses: %s", x, y, bonuses));
+        }
+        bonuses.remove(new Coordinates(x, y));
         map[x][y] = EMPTY_FIELD_SYMBOL;
     }
 
     public boolean isEmpty(int x, int y) {
-        return map[x][y] == EMPTY_FIELD_SYMBOL;
+        return !isWall(x, y) && robots.getRobotAt(x, y) == null && bonuses.stream().filter(c -> c.x() == x && c.y() == y).count() == 0;
     }
 
     public boolean isWall(int x, int y) {
-        return map[x][y] == WALL_HORIZONTAL || map[x][y] == WALL_VERTICAL || map[x][y] == WALL_CORNER;
+        return x == 0 || x == totalWidth - 1 || y == 0 || y == totalHeight - 1;
     }
 
-    /**
-     * Returns the symbol from the box in front of given robot.
-     *
-     * @param robotName robot name
-     * @return symbol in front of given robot
-     */
-    public char getBoxInFrontOf(Robot robotName) {
-        return map[robotName.getFrontX()][robotName.getFrontY()];
+    public boolean isBonus(int x, int y) {
+        return bonuses.stream().filter(c -> c.x() == x && c.y() == y).count() == 1;
+    }
+
+
+    private class Coordinates {
+
+        private final int x;
+        private final int y;
+
+        public Coordinates(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int x() {
+            return x;
+        }
+
+        public int y() {
+            return y;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            Coordinates that = (Coordinates) o;
+
+            return this.x == that.x && this.y == that.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * x + y;
+        }
+
     }
 
 }

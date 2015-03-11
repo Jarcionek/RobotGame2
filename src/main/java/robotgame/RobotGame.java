@@ -146,6 +146,7 @@ public class RobotGame {
         }
 
         robots = new Robots(listShuffler.shuffle(names));
+        map.setRobots(robots);
     }
 
     private void allocateSkillPoints() {
@@ -319,7 +320,7 @@ public class RobotGame {
      * @param name name of the current player's robot
      */
     private void move(Robot name) {
-        if (map.getBoxInFrontOf(name) == RoboMap.BONUS_SYMBOL) { //if bonus
+        if (map.isBonus(name.getFrontX(), name.getFrontY())) { //if bonus
             map.loadRobot(name, RoboMap.EMPTY_FIELD_SYMBOL);
             name.moveForward(1);
             name.changeAP(-1);
@@ -356,7 +357,7 @@ public class RobotGame {
                 outputPrinter.println("Your attack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".");
                 popUp.show("Your attack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".", "Bonus taken");
             }
-        } else if (map.getBoxInFrontOf(name) != RoboMap.EMPTY_FIELD_SYMBOL) { //if not empty
+        } else if (!map.isEmpty(name.getFrontX(), name.getFrontY())) { //if not empty
             outputPrinter.println("There is an obstacle in front of your robot preventing it from moving forward.");
             unknownCommand = true;
         } else { //if empty
