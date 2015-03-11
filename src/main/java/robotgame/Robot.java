@@ -43,19 +43,16 @@ public class Robot {
     }
 
     public void moveForward(int distance) {
-        if (direction == Direction.NORTH) {
-            y += distance;
-        } else if (direction == Direction.EAST) {
-            x += distance;
-        } else if (direction == Direction.SOUTH) {
-            y -= distance;
-        } else if (direction == Direction.WEST) {
-            x -= distance;
+        switch (direction) {
+            case NORTH: y += distance; break;
+            case EAST:  x += distance; break;
+            case SOUTH: y -= distance; break;
+            case WEST:  x -= distance; break;
         }
     }
 
     public String getPositionAsString() {
-        return "(" + x + ";" + y + ") faces " + direction.name().toLowerCase();
+        return String.format("(%s;%s) faces %s", x, y, direction.name().toLowerCase());
     }
 
     public int getX() {
@@ -111,22 +108,18 @@ public class Robot {
     }
 
     public int getFrontX() {
-        if (direction == Direction.EAST) {
-            return x + 1;
-        } else if (direction == Direction.WEST) {
-            return x - 1;
-        } else {
-            return x;
+        switch (direction) {
+            case EAST: return x + 1;
+            case WEST: return x - 1;
+            default: return x;
         }
     }
 
     public int getFrontY() {
-        if (direction == Direction.NORTH) {
-            return y + 1;
-        } else if (direction == Direction.SOUTH) {
-            return y - 1;
-        } else {
-            return y;
+        switch (direction) {
+            case NORTH: return y + 1;
+            case SOUTH: return y - 1;
+            default: return y;
         }
     }
 
