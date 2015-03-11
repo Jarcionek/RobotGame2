@@ -1,5 +1,6 @@
 package robotgame;
 
+import com.google.common.collect.ImmutableList;
 import robotgame.io.InputReader;
 import robotgame.io.OutputPrinter;
 import robotgame.io.PopUp;
@@ -8,6 +9,7 @@ import robotgame.io.ProgramTerminator;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Joiner.on;
 import static robotgame.Attribute.AP;
 import static robotgame.Attribute.ATTACK;
 import static robotgame.Attribute.ENDURANCE;
@@ -132,12 +134,9 @@ public class RobotGame {
                 name = inputReader.next();
                 repeatedName = false;
 
-                for (String existingName : names) {
-                    if (name.equalsIgnoreCase(existingName)) {
-                        repeatedName = true;
-                        outputPrinter.println("Another player has already chosen that name.");
-                        break;
-                    }
+                if (names.contains(name)) {
+                    repeatedName = true;
+                    outputPrinter.println("Another player has already chosen that name.");
                 }
 
             } while (repeatedName);
@@ -155,13 +154,7 @@ public class RobotGame {
             outputPrinter.println("Allocate " + robots.get(i).getName() + "'s skill points.");
             popUp.show("Allocate " + robots.get(i).getName() + "'s skill points.", "Allocate skill points");
             outputPrinter.println("By default, each robot has 3 endurance, 5 speed and 1 attack.");
-            String possibilities[] = {"endurance", "e", "speed", "s", "attack", "a"};
-
-            String result = "";
-            for (String possibility : possibilities) {
-                result += possibility + ", ";
-            }
-            result = result.substring(0, result.length() - 2);
+            List<String> possibilities = ImmutableList.of("endurance", "e", "speed", "s", "attack", "a");
 
             outputPrinter.println("Each point added to endurance increases your HP by " + ENDURANCE_MULTIPLIER + " points.");
             outputPrinter.println("Each point added to speed increases your AP by 1 point.");
@@ -174,15 +167,13 @@ public class RobotGame {
                     outputPrinter.println("You have " + robots.get(i).getSkillPoints() + " skill points to allocate.");
                     String input = inputReader.next();
 
-                    for (String possibility : possibilities) {
-                        if (input.toLowerCase().equals(possibility)) {
-                            incorrect_input = false;
-                        }
+                    if (possibilities.contains(input.toLowerCase())) {
+                        incorrect_input = false;
                     }
 
                     if (incorrect_input) {
                         outputPrinter.println("Incorrect skill.");
-                        outputPrinter.println("You can allocate skill points to the following skills: " + result);
+                        outputPrinter.println("You can allocate skill points to the following skills: " + on(", ").join(possibilities));
                     } else {
                         robots.get(i).changeSkillPoints(-1);
                         if (input.toLowerCase().equals("endurance") || input.toLowerCase().equals("e")) {
@@ -284,7 +275,6 @@ public class RobotGame {
                 try {
                     direction = Direction.valueOf(input.toUpperCase());
                 } catch (IllegalArgumentException ex) {
-
                     outputPrinter.println("Incorrect value. Your robot can only face north, east, south or west.");
                     incorrect_direction = true;
                 }
