@@ -316,13 +316,13 @@ public class RobotGame {
     /**
      * move command, in case of attempt of moving into another robot or wall, the information is printed; bonus are taken automatically.
      *
-     * @param name name of the current player's robot
+     * @param robot current robot
      */
-    private void move(Robot name) {
-        if (map.isBonus(name.getFrontX(), name.getFrontY())) { //if bonus
-            name.moveForward(1);
-            name.changeAP(-1);
-            map.removeBonus(name.getX(), name.getY());
+    private void move(Robot robot) {
+        if (map.isBonus(robot.getFrontX(), robot.getFrontY())) { //if bonus
+            robot.moveForward(1);
+            robot.changeAP(-1);
+            map.removeBonus(robot.getX(), robot.getY());
             numberOfBonusesOnTheMap--;
 
             Bonus bonus = bonuses.getRandom();
@@ -330,44 +330,44 @@ public class RobotGame {
             Attribute attribute = bonus.getAttribute();
 
             if (attribute.equals(AP)) { //what kind of bonus is it
-                name.changeAP(amount);
-                outputPrinter.println(amount + " action points added. " + name.getAP() + " AP left.");
-                popUp.show(amount + " action points added. " + name.getAP() + " AP left.", "Bonus taken");
+                robot.changeAP(amount);
+                outputPrinter.println(amount + " action points added. " + robot.getAP() + " AP left.");
+                popUp.show(amount + " action points added. " + robot.getAP() + " AP left.", "Bonus taken");
             } else if (attribute.equals(HP)) {
-                name.changeHP(amount);
-                if (name.getHP() == ENDURANCE_MULTIPLIER * name.getEndurance()) {
+                robot.changeHP(amount);
+                if (robot.getHP() == ENDURANCE_MULTIPLIER * robot.getEndurance()) {
                     outputPrinter.println("You have been completely healed.");
                     popUp.show("You have been completely healed.", "Bonus taken");
                 } else {
-                    outputPrinter.println("You have been healed for " + amount + " points. Your current HP is " + name.getHP() + ".");
-                    popUp.show("You have been healed for " + amount + " points. Your current HP is " + name.getHP() + ".", "Bonus taken");
+                    outputPrinter.println("You have been healed for " + amount + " points. Your current HP is " + robot.getHP() + ".");
+                    popUp.show("You have been healed for " + amount + " points. Your current HP is " + robot.getHP() + ".", "Bonus taken");
                 }
             } else if (attribute.equals(ENDURANCE)) {
-                name.changeEndurance(amount);
-                outputPrinter.println("Your endurance has been increased by " + amount + ". Your current endurance is " + name.getEndurance() + ".");
-                popUp.show("Your endurance has been increased by " + amount + ". Your current endurance is " + name.getEndurance() + ".", "Bonus taken");
+                robot.changeEndurance(amount);
+                outputPrinter.println("Your endurance has been increased by " + amount + ". Your current endurance is " + robot.getEndurance() + ".");
+                popUp.show("Your endurance has been increased by " + amount + ". Your current endurance is " + robot.getEndurance() + ".", "Bonus taken");
             } else if (attribute.equals(SPEED)) {
-                name.changeSpeed(amount);
-                outputPrinter.println("Your speed has been increased by " + amount + ". Your current speed is " + name.getSpeed() + ".");
-                popUp.show("Your speed has been increased by " + amount + ". Your current speed is " + name.getSpeed() + ".", "Bonus taken");
+                robot.changeSpeed(amount);
+                outputPrinter.println("Your speed has been increased by " + amount + ". Your current speed is " + robot.getSpeed() + ".");
+                popUp.show("Your speed has been increased by " + amount + ". Your current speed is " + robot.getSpeed() + ".", "Bonus taken");
             } else if (attribute.equals(ATTACK)) {
-                name.changeAttack(amount);
-                outputPrinter.println("Your attack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".");
-                popUp.show("Your attack has been increased by " + amount + ". Your current attack is " + name.getAttack() + ".", "Bonus taken");
+                robot.changeAttack(amount);
+                outputPrinter.println("Your attack has been increased by " + amount + ". Your current attack is " + robot.getAttack() + ".");
+                popUp.show("Your attack has been increased by " + amount + ". Your current attack is " + robot.getAttack() + ".", "Bonus taken");
             }
-        } else if (!map.isEmpty(name.getFrontX(), name.getFrontY())) { //if not empty
+        } else if (!map.isEmpty(robot.getFrontX(), robot.getFrontY())) { //if not empty
             outputPrinter.println("There is an obstacle in front of your robot preventing it from moving forward.");
             unknownCommand = true;
         } else { //if empty
-            name.moveForward(1);
-            name.changeAP(-1);
+            robot.moveForward(1);
+            robot.changeAP(-1);
         } //end move command
     }
 
     /**
      * Attack command: informs if there is nothing to attack, in case of attempt of attacking bonus asks for confirmation, in case of hitting another robot, map is not printed.
      *
-     * @param robot name of the current player's robot
+     * @param robot current robot
      */
     private void attack(Robot robot) {
         if (map.isBonus(robot.getFrontX(), robot.getFrontY())) { //if there is bonus in front of robot
