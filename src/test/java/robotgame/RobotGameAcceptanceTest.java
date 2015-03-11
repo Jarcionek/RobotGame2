@@ -384,7 +384,7 @@ public class RobotGameAcceptanceTest {
                 .willReturn("a"); // kill first player
 
         when(listShuffler.shuffle(any())).thenAnswer(shuffleMethodCall -> {
-            @SuppressWarnings("unchecked") List<Robot> robots = (List<Robot>) shuffleMethodCall.getArguments()[0];
+            @SuppressWarnings("unchecked") List<?> robots = (List<?>) shuffleMethodCall.getArguments()[0];
 
             return newArrayList(
                     robots.get(0),

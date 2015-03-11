@@ -8,6 +8,7 @@ public class Robot {
     public static final int ENDURANCE_MULTIPLIER = 2;
     private static final String COMMANDS[] = {"skip", "move", "m", "left", "l", "right", "r", "hit", "h", "attack", "a", "scan", "s", "help", "?"};
 
+    private final int id;
     private final String name;
 
     private int x = 0;
@@ -22,7 +23,8 @@ public class Robot {
     private int ap = 0; // action points
     private int hp = endurance * ENDURANCE_MULTIPLIER; // health points
 
-    public Robot(String name) {
+    public Robot(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -84,29 +86,19 @@ public class Robot {
         }
     }
 
-    /**
-     * Commands robot to send its current X coordinate.
-     *
-     * @return X coordinate
-     */
     public int getX() {
         return x;
     }
 
-    /**
-     * Commands robot to send its current Y coordinate.
-     *
-     * @return Y coordinate
-     */
     public int getY() {
         return y;
     }
 
-    /**
-     * Return robot's name.
-     *
-     * @return robot's name
-     */
+
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -283,4 +275,5 @@ public class Robot {
     public void changeSkillPoints(int addSkillPoints) {
         skillPoints += addSkillPoints;
     }
+
 }

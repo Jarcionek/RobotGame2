@@ -63,22 +63,11 @@ public class RoboMap {
      *
      * @param symbol    new symbol given as a char
      */
-    public void loadRobot(Robot robot, char symbol) { //TODO Jarek: used for moving/destroying robots and for highlighting active robot
+    public void loadRobot(Robot robot, char symbol) { //TODO Jarek: remove
         if (robot.getX() != 0 && robot.getY() != 0) {
             map[robot.getX()][robot.getY()] = symbol;
         }
 
-    }
-
-    /**
-     * Takes position of given robot and changes symbol on the map where robot currently is. REMINDER: 183 - dot, 215 - cross.
-     *
-     * @param symbol    new symbol given as an int (automaticaly converted into char)
-     */
-    public void loadRobot(Robot robot, int symbol) { //TODO Jarek: used only for displaying map with robots ids
-        if (robot.getX() != 0 && robot.getY() != 0) {
-            map[robot.getX()][robot.getY()] = (char) symbol;
-        }
     }
 
     public void addBonus(int x, int y) {

@@ -124,7 +124,7 @@ public class RobotGame {
     }
 
     private void createPlayers() {
-        List<Robot> list = new ArrayList<>(numberOfPlayers);
+        List<String> names = new ArrayList<>(numberOfPlayers);
 
         for (int i = 1; i <= numberOfPlayers; i++) {
             String name;
@@ -135,8 +135,8 @@ public class RobotGame {
                 name = inputReader.next();
                 repeatedName = false;
 
-                for (Robot robot : list) {
-                    if (name.toLowerCase().equals(robot.getName().toLowerCase())) {
+                for (String existingName : names) {
+                    if (name.equalsIgnoreCase(existingName)) {
                         repeatedName = true;
                         outputPrinter.println("Another player has already chosen that name.");
                         break;
@@ -145,10 +145,16 @@ public class RobotGame {
 
             } while (repeatedName);
 
-            list.add(new Robot(name));
+            names.add(name);
         }
 
-        robots = ImmutableList.copyOf(listShuffler.shuffle(list));
+        List<String> shuffledNames = listShuffler.shuffle(names);
+
+        ImmutableList.Builder<Robot> builder = ImmutableList.builder();
+        for (int i = 0; i < shuffledNames.size(); i++) {
+            builder.add(new Robot(i, shuffledNames.get(i)));
+        }
+        robots = builder.build();
     }
 
     private void allocateSkillPoints() {
@@ -438,21 +444,9 @@ public class RobotGame {
 
     /**
      * Prints a map with robots represented as different digits, throw JOptionPane with stats of all robots
-     *
-     * @param robot name of the current player robot
      */
-    private void scan(Robot robot) {
-        for (int no = 0; no < numberOfPlayers; no++) { //represents robots as digits
-            map.loadRobot(robots.get(no), (char) no + 48); //0's code is 48
-        }
-
-        outputPrinter.print(mapToStringConverter.getMapAsString()); //prints map with robots represented as digits
-
-        for (int no = 0; no < numberOfPlayers; no++) { //representes all robots as inactives robots
-            map.loadRobot(robots.get(no), RoboMap.ROBOT_SYMBOL);
-        }
-
-        map.loadRobot(robot, RoboMap.ACTIVE_ROBOT_SYMBOL); //represents current player's robot as active robot
+    private void scan() {
+        outputPrinter.print(mapToStringConverter.getMapAsStringWithRobotsIds());
 
         PlayersInfo Information = new PlayersInfo(numberOfPlayers);
         for (int player = 0; player < numberOfPlayers; player++) {
@@ -561,7 +555,7 @@ public class RobotGame {
                         } else if (input.toLowerCase().equals("hit") || input.toLowerCase().equals("h") || input.toLowerCase().equals("attack") || input.toLowerCase().equals("a")) {
                             attack(robots.get(i));
                         } else if (input.toLowerCase().equals("scan") || input.toLowerCase().equals("s")) {
-                            scan(robots.get(i));
+                            scan();
                         } else if (input.toLowerCase().equals("help") || input.equals("?")) {
                             popUp.show(printHelp(robots.get(i)), "Help");
                         } //END COMMANDS
