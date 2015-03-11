@@ -13,8 +13,6 @@ import static robotgame.Attribute.ATTACK;
 import static robotgame.Attribute.ENDURANCE;
 import static robotgame.Attribute.HP;
 import static robotgame.Attribute.SPEED;
-import static robotgame.RoboMap.WALL_HORIZONTAL;
-import static robotgame.RoboMap.WALL_VERTICAL;
 import static robotgame.Robot.ENDURANCE_MULTIPLIER;
 
 public class RobotGame {
@@ -375,12 +373,10 @@ public class RobotGame {
      * @param robot name of the current player's robot
      */
     private void attack(Robot robot) {
-        if (map.getBoxInFrontOf(robot) == RoboMap.EMPTY_FIELD_SYMBOL || //if there is nothing to hit
-                map.getBoxInFrontOf(robot) == WALL_VERTICAL ||
-                map.getBoxInFrontOf(robot) == WALL_HORIZONTAL) { //if there is nothing to hit - condition end
+        if (map.isWall(robot.getFrontX(), robot.getFrontY()) || map.isEmpty(robot.getFrontX(), robot.getFrontY())) {
             outputPrinter.println("There are no robots in front of you.");
             unknownCommand = true;
-        } else if (map.getBoxInFrontOf(robot) == RoboMap.ROBOT_SYMBOL) { //if there is another robot in front of current one
+        } else if (robots.getRobotAt(robot.getFrontX(), robot.getFrontY()) != null) { //if there is another robot in front of current one
             for (int find = 0; find < numberOfPlayers; find++) { //find which robot is standing in front of current one
                 if (robot.getFrontX() == robots.get(find).getX() && robot.getFrontY() == robots.get(find).getY()) {
                     robots.get(find).changeHP(-robot.getAttack());

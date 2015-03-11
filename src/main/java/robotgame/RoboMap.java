@@ -82,6 +82,10 @@ public class RoboMap {
         return map[x][y] == EMPTY_FIELD_SYMBOL;
     }
 
+    public boolean isWall(int x, int y) {
+        return map[x][y] == WALL_HORIZONTAL || map[x][y] == WALL_VERTICAL || map[x][y] == WALL_CORNER;
+    }
+
     /**
      * Returns the symbol from the box in front of given robot.
      *
