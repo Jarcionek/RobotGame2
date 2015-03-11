@@ -86,7 +86,7 @@ public class RoboMap {
         map[x][y] = BONUS_SYMBOL;
     }
 
-    public void destroyBonus(int x, int y) {
+    public void removeBonus(int x, int y) {
         if (!bonuses.contains(new Coordinates(x, y))) {
             throw new IllegalArgumentException(String.format("No bonus at (%s,%s), bonuses: %s", x, y, bonuses));
         }
@@ -95,7 +95,7 @@ public class RoboMap {
     }
 
     public boolean isEmpty(int x, int y) {
-        return !isWall(x, y) && robots.getRobotAt(x, y) == null && bonuses.stream().filter(c -> c.x() == x && c.y() == y).count() == 0;
+        return !isWall(x, y) && robots.getRobotAt(x, y) == null && !isBonus(x, y);
     }
 
     public boolean isWall(int x, int y) {
@@ -144,6 +144,10 @@ public class RoboMap {
             return 31 * x + y;
         }
 
+        @Override
+        public String toString() {
+            return String.format("(%s,%s)", x, y);
+        }
     }
 
 }

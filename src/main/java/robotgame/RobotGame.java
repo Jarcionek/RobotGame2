@@ -322,6 +322,7 @@ public class RobotGame {
     private void move(Robot name) {
         if (map.isBonus(name.getFrontX(), name.getFrontY())) { //if bonus
             map.loadRobot(name, RoboMap.EMPTY_FIELD_SYMBOL);
+            map.removeBonus(name.getFrontX(), name.getFrontY());
             name.moveForward(1);
             name.changeAP(-1);
             map.loadRobot(name, RoboMap.ROBOT_SYMBOL);
@@ -374,59 +375,59 @@ public class RobotGame {
      * @param robot name of the current player's robot
      */
     private void attack(Robot robot) {
-        if (map.isWall(robot.getFrontX(), robot.getFrontY()) || map.isEmpty(robot.getFrontX(), robot.getFrontY())) {
-            outputPrinter.println("There are no robots in front of you.");
-            unknownCommand = true;
-        } else if (robots.getRobotAt(robot.getFrontX(), robot.getFrontY()) != null) { //if there is another robot in front of current one
-            for (int find = 0; find < numberOfPlayers; find++) { //find which robot is standing in front of current one
-                if (robot.getFrontX() == robots.get(find).getX() && robot.getFrontY() == robots.get(find).getY()) {
-                    robots.get(find).changeHP(-robot.getAttack());
-                    robot.changeAP(-1);
-                    displayMap = false;
-
-                    if (robots.get(find).getHP() > 0) { //check if not killed
-                        outputPrinter.println("Your robot hits " + robots.get(find).getName() + " for " + robot.getAttack() + " HP");
-                        outputPrinter.println(robots.get(find).getName() + "'s HP is " + robots.get(find).getHP() + ". " + robot.getAP() + " AP left.");
-                    } else { //if killed
-                        map.loadRobot(robots.get(find), RoboMap.EMPTY_FIELD_SYMBOL); //change character in the map array
-                        robots.get(find).place(0, 0, 1); //remove from map
-
-                        outputPrinter.print(mapToStringConverter.getMapAsStringWithHighlighted(robot));
-
-                        outputPrinter.print("Your robot kills " + robots.get(find).getName() + ". ");
-                        popUp.show("Your robot kills " + robots.get(find).getName() + "! ", "One less!");
-
-                        int playersAlive = 0;
-                        for (int k = 0; k < numberOfPlayers; k++) { //check how many players are still in game
-                            if (robots.get(k).getHP() > 0) {
-                                playersAlive++;
-                            }
-                        } //end check how many players are still in game
-
-                        if (playersAlive == 1) { //if there is only one player remaining
-                            for (int k = 0; k < numberOfPlayers; k++) { //find that player's number
-                                if (robots.get(k).getHP() > 0) {
-                                    outputPrinter.print("\n");
-                                    popUp.show(robots.get(k).getName().toUpperCase() + " IS A WINNER!", "VICTORY");
-                                    programTerminator.exit(); //finish game
-                                }
-                            } //end find that player's number
-                        } //end if there is only one player remaining
-
-                        outputPrinter.println(robot.getAP() + " AP left.");
-
-                    } //end check if not killed
-                    break; //if found, there is no need of looking further for
-                }
-            } //end find which robot is standing in front of current one
-        } else { //if there is bonus in front of robot
+        if (map.isBonus(robot.getFrontX(), robot.getFrontY())) { //if there is bonus in front of robot
             outputPrinter.println("Are you sure that you want to attack and destroy that bonus?");
             String input = inputReader.next();
             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
-                map.destroyBonus(robot.getFrontX(), robot.getFrontY());
+                map.removeBonus(robot.getFrontX(), robot.getFrontY());
                 numberOfBonusesOnTheMap--;
                 robot.changeAP(-1);
             }
+            return;
+        }
+
+        Robot robotInFront = robots.getRobotAt(robot.getFrontX(), robot.getFrontY());
+        if (robotInFront == null) {
+            outputPrinter.println("There are no robots in front of you.");
+            unknownCommand = true;
+            return;
+        }
+
+        robotInFront.changeHP(-robot.getAttack());
+        robot.changeAP(-1);
+        displayMap = false;
+
+        if (robotInFront.getHP() > 0) { //check if not killed
+            outputPrinter.println("Your robot hits " + robotInFront.getName() + " for " + robot.getAttack() + " HP");
+            outputPrinter.println(robotInFront.getName() + "'s HP is " + robotInFront.getHP() + ". " + robot.getAP() + " AP left.");
+        } else { //if killed
+            map.loadRobot(robotInFront, RoboMap.EMPTY_FIELD_SYMBOL); //change character in the map array
+            robotInFront.place(0, 0, 1); //remove from map
+
+            outputPrinter.print(mapToStringConverter.getMapAsStringWithHighlighted(robot));
+
+            outputPrinter.print("Your robot kills " + robotInFront.getName() + ". ");
+            popUp.show("Your robot kills " + robotInFront.getName() + "! ", "One less!");
+
+            int playersAlive = 0;
+            for (int k = 0; k < numberOfPlayers; k++) { //check how many players are still in game
+                if (robots.get(k).getHP() > 0) {
+                    playersAlive++;
+                }
+            } //end check how many players are still in game
+
+            if (playersAlive == 1) { //if there is only one player remaining
+                for (int k = 0; k < numberOfPlayers; k++) { //find that player's number
+                    if (robots.get(k).getHP() > 0) {
+                        outputPrinter.print("\n");
+                        popUp.show(robots.get(k).getName().toUpperCase() + " IS A WINNER!", "VICTORY");
+                        programTerminator.exit(); //finish game
+                    }
+                } //end find that player's number
+            } //end if there is only one player remaining
+
+            outputPrinter.println(robot.getAP() + " AP left.");
+
         }
     }
 
