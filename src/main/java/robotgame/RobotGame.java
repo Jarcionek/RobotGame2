@@ -1,6 +1,5 @@
 package robotgame;
 
-import com.google.common.collect.ImmutableList;
 import robotgame.io.InputReader;
 import robotgame.io.OutputPrinter;
 import robotgame.io.PopUp;
@@ -51,7 +50,7 @@ public class RobotGame {
     private int mapWidth = 0;
     private int mapHeight = 0;
     private RoboMap map;
-    private List<Robot> robots;
+    private Robots robots;
     private boolean unknownCommand = false; //used also as unreachable command
     private boolean displayMap = true;
 
@@ -148,13 +147,7 @@ public class RobotGame {
             names.add(name);
         }
 
-        List<String> shuffledNames = listShuffler.shuffle(names);
-
-        ImmutableList.Builder<Robot> builder = ImmutableList.builder();
-        for (int i = 0; i < shuffledNames.size(); i++) {
-            builder.add(new Robot(i, shuffledNames.get(i)));
-        }
-        robots = builder.build();
+        robots = new Robots(listShuffler.shuffle(names));
     }
 
     private void allocateSkillPoints() {
@@ -401,9 +394,7 @@ public class RobotGame {
                         map.loadRobot(robots.get(find), RoboMap.EMPTY_FIELD_SYMBOL); //change character in the map array
                         robots.get(find).place(0, 0, 1); //remove from map
 
-                        map.loadRobot(robot, RoboMap.ACTIVE_ROBOT_SYMBOL);
-                        outputPrinter.print(mapToStringConverter.getMapAsString());
-                        map.loadRobot(robot, RoboMap.ROBOT_SYMBOL);
+                        outputPrinter.print(mapToStringConverter.getMapAsStringWithHighlighted(robot));
 
                         outputPrinter.print("Your robot kills " + robots.get(find).getName() + ". ");
                         popUp.show("Your robot kills " + robots.get(find).getName() + "! ", "One less!");
@@ -520,11 +511,7 @@ public class RobotGame {
                     do {
 
                         if (!unknownCommand && displayMap) { //don't print map and information about position and AP left when unknown or unreachable command
-                            map.loadRobot(robots.get(i), RoboMap.ACTIVE_ROBOT_SYMBOL);
-
-                            outputPrinter.print(mapToStringConverter.getMapAsString());
-
-                            map.loadRobot(robots.get(i), RoboMap.ROBOT_SYMBOL);
+                            outputPrinter.print(mapToStringConverter.getMapAsStringWithHighlighted(robots.get(i)));
 
                             outputPrinter.println(robots.get(i).getName() + "'s turn. " + robots.get(i).getHP() + " HP");
                             outputPrinter.println("Current position: " + robots.get(i).getPositionAsString());
