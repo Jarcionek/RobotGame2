@@ -308,7 +308,6 @@ public class RobotGame {
 
             String antiCheat = inputReader.nextLine();
             robots.get(i).place(X, Y, direction); //despite robot was created after taking X and Y, it was done without direction (assigned north)
-            map.loadRobot(robots.get(i), RoboMap.ROBOT_SYMBOL); //load robot to the map
         }
     }
 
@@ -321,11 +320,9 @@ public class RobotGame {
      */
     private void move(Robot name) {
         if (map.isBonus(name.getFrontX(), name.getFrontY())) { //if bonus
-            map.loadRobot(name, RoboMap.EMPTY_FIELD_SYMBOL);
-            map.removeBonus(name.getFrontX(), name.getFrontY());
             name.moveForward(1);
             name.changeAP(-1);
-            map.loadRobot(name, RoboMap.ROBOT_SYMBOL);
+            map.removeBonus(name.getX(), name.getY());
             numberOfBonusesOnTheMap--;
 
             Bonus bonus = bonuses.getRandom();
@@ -362,10 +359,8 @@ public class RobotGame {
             outputPrinter.println("There is an obstacle in front of your robot preventing it from moving forward.");
             unknownCommand = true;
         } else { //if empty
-            map.loadRobot(name, RoboMap.EMPTY_FIELD_SYMBOL);
             name.moveForward(1);
             name.changeAP(-1);
-            map.loadRobot(name, RoboMap.ROBOT_SYMBOL);
         } //end move command
     }
 
@@ -401,7 +396,6 @@ public class RobotGame {
             outputPrinter.println("Your robot hits " + robotInFront.getName() + " for " + robot.getAttack() + " HP");
             outputPrinter.println(robotInFront.getName() + "'s HP is " + robotInFront.getHP() + ". " + robot.getAP() + " AP left.");
         } else { //if killed
-            map.loadRobot(robotInFront, RoboMap.EMPTY_FIELD_SYMBOL); //change character in the map array
             robotInFront.place(0, 0, 1); //remove from map
 
             outputPrinter.print(mapToStringConverter.getMapAsStringWithHighlighted(robot));
@@ -471,11 +465,11 @@ public class RobotGame {
                 "Bonuses can be destroyed with one attack.\n" +
                 "\n" +
                 "Symbols on the map:\n" +
-                "edges of the map: + - |\n" +
-                "empty field: " + RoboMap.EMPTY_FIELD_SYMBOL + "\n" +
-                "your robot: " + RoboMap.ACTIVE_ROBOT_SYMBOL + "\n" +
-                "random bonus: " + RoboMap.BONUS_SYMBOL + "\n" +
-                "other player's robot: " + RoboMap.ROBOT_SYMBOL;
+                "edges of the map: " + MapToStringConverter.WALL_CORNER + " " + MapToStringConverter.WALL_HORIZONTAL + " " + MapToStringConverter.WALL_VERTICAL + "\n" +
+                "empty field: " + MapToStringConverter.EMPTY_FIELD_SYMBOL + "\n" +
+                "your robot: " + MapToStringConverter.ACTIVE_ROBOT_SYMBOL + "\n" +
+                "random bonus: " + MapToStringConverter.BONUS_SYMBOL + "\n" +
+                "other player's robot: " + MapToStringConverter.ROBOT_SYMBOL;
     }
 
     public void start() {

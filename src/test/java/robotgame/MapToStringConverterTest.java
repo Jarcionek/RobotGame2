@@ -12,14 +12,14 @@ public class MapToStringConverterTest {
 
     @Test
     public void convertsMapToString() {
-        MapToStringConverter mapToStringConverter = new MapToStringConverter(new RoboMap(3, 3), new Robots(Collections.<String>emptyList()));
+        MapToStringConverter mapToStringConverter = new MapToStringConverter(new RoboMap(4, 3), new Robots(Collections.<String>emptyList()));
 
         assertThat(mapToStringConverter.getMapAsString(), is(equalTo(
-                "+---+" + "\n" +
-                "|...|" + "\n" +
-                "|...|" + "\n" +
-                "|...|" + "\n" +
-                "+---+" + "\n"
+                "+----+" + "\n" +
+                "|....|" + "\n" +
+                "|....|" + "\n" +
+                "|....|" + "\n" +
+                "+----+" + "\n"
         )));
     }
 

@@ -2,6 +2,14 @@ package robotgame;
 
 public class MapToStringConverter {
 
+    public static final char ROBOT_SYMBOL = '#';
+    public static final char ACTIVE_ROBOT_SYMBOL = 'O';
+    public static final char BONUS_SYMBOL = '$';
+    public static final char EMPTY_FIELD_SYMBOL = '.';
+    public static final char WALL_CORNER = '+';
+    public static final char WALL_HORIZONTAL = '-';
+    public static final char WALL_VERTICAL = '|';
+
     private final RoboMap map;
     private final Robots robots;
 
@@ -11,40 +19,19 @@ public class MapToStringConverter {
     }
 
     public String getMapAsString() {
-        final char chars[][] = new char[map.getTotalHeight()][map.getTotalWidth()];
-
-        for (int y = map.getTotalHeight() - 1; y >= 0; y--) {
-            for (int x = 0; x <= map.getTotalWidth() - 1; x++) {
-                chars[x][y] = map.getMap()[x][y];
-            }
-        }
+        final char[][] chars = mapWithBonuses();
 
         for (Robot robot : robots) {
             if (robot.getX() != 0 && robot.getY() != 0) {
-                chars[robot.getX()][robot.getY()] = RoboMap.ROBOT_SYMBOL;
+                chars[robot.getX()][robot.getY()] = MapToStringConverter.ROBOT_SYMBOL;
             }
         }
 
-        String result = "";
-
-        for (int y = map.getTotalHeight() - 1; y >= 0; y--) {
-            for (int x = 0; x <= map.getTotalWidth() - 1; x++) {
-                result += chars[x][y];
-            }
-            result += "\n";
-        }
-
-        return result;
+        return asString(chars);
     }
 
     public String getMapAsStringWithRobotsIds() {
-        final char chars[][] = new char[map.getTotalHeight()][map.getTotalWidth()];
-
-        for (int y = map.getTotalHeight() - 1; y >= 0; y--) {
-            for (int x = 0; x <= map.getTotalWidth() - 1; x++) {
-                chars[x][y] = map.getMap()[x][y];
-            }
-        }
+        final char[][] chars = mapWithBonuses();
 
         for (Robot robot : robots) {
             if (robot.getHP() > 0) {
@@ -52,39 +39,69 @@ public class MapToStringConverter {
             }
         }
 
-        String result = "";
-
-        for (int y = map.getTotalHeight() - 1; y >= 0; y--) {
-            for (int x = 0; x <= map.getTotalWidth() - 1; x++) {
-                result += chars[x][y];
-            }
-            result += "\n";
-        }
-
-        return result;
+        return asString(chars);
     }
 
     public String getMapAsStringWithHighlighted(Robot highlightedRobot) {
-        final char chars[][] = new char[map.getTotalHeight()][map.getTotalWidth()];
-
-        for (int y = map.getTotalHeight() - 1; y >= 0; y--) {
-            for (int x = 0; x <= map.getTotalWidth() - 1; x++) {
-                chars[x][y] = map.getMap()[x][y];
-            }
-        }
+        final char[][] chars = mapWithBonuses();
 
         for (Robot robot : robots) {
             if (robot.getX() != 0 && robot.getY() != 0) {
-                chars[robot.getX()][robot.getY()] = RoboMap.ROBOT_SYMBOL;
+                chars[robot.getX()][robot.getY()] = MapToStringConverter.ROBOT_SYMBOL;
             }
         }
-        chars[highlightedRobot.getX()][highlightedRobot.getY()] = RoboMap.ACTIVE_ROBOT_SYMBOL;
+        chars[highlightedRobot.getX()][highlightedRobot.getY()] = MapToStringConverter.ACTIVE_ROBOT_SYMBOL;
 
+        return asString(chars);
+    }
+
+    private char[][] mapWithBonuses() {
+        final char[][] chars = emptyMap();
+
+        for (Coordinates coordinates : map.getBonuses()) {
+            chars[coordinates.x()][coordinates.y()] = MapToStringConverter.BONUS_SYMBOL;
+        }
+
+        return chars;
+    }
+
+    private char[][] emptyMap() {
+        int totalWidth = map.getWidth() + 2;
+        int totalHeight = map.getHeight() + 2;
+
+        final char chars[][] = new char[totalWidth][totalHeight];
+
+        for (int x = 1; x < totalWidth - 1; x++) {
+            for (int y = 1; y < totalHeight - 1; y++) {
+                chars[x][y] = EMPTY_FIELD_SYMBOL;
+            }
+        }
+
+        chars[0][0] = WALL_CORNER;
+        chars[totalWidth - 1][0] = WALL_CORNER;
+        chars[0][totalHeight - 1] = WALL_CORNER;
+        chars[totalWidth - 1][totalHeight - 1] = WALL_CORNER;
+
+        for (int x = 1; x < totalWidth - 1; x++) {
+            chars[x][0] = WALL_HORIZONTAL;
+            chars[x][totalHeight - 1] = WALL_HORIZONTAL;
+        }
+
+        for (int y = 1; y < totalHeight - 1; y++) {
+            chars[0][y] = WALL_VERTICAL;
+            chars[totalWidth - 1][y] = WALL_VERTICAL;
+        }
+
+        return chars;
+    }
+
+    private String asString(char[][] chars) {
         String result = "";
+        int height = chars[0].length;
 
-        for (int y = map.getTotalHeight() - 1; y >= 0; y--) {
-            for (int x = 0; x <= map.getTotalWidth() - 1; x++) {
-                result += chars[x][y];
+        for (int y = height - 1; y >= 0; y--) {
+            for (char[] row : chars) {
+                result += row[y];
             }
             result += "\n";
         }
