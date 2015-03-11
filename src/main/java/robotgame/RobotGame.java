@@ -228,8 +228,8 @@ public class RobotGame {
 
     private void placeRobotsOnTheMap() {
         for (int i = 0; i < numberOfPlayers; i++) {
-            int X = 0;
-            int Y = 0;
+            int x = 0;
+            int y = 0;
             int direction = 0;
             boolean incorrect_direction = false;
             boolean alreadyUsed = false;
@@ -249,7 +249,7 @@ public class RobotGame {
                     } else if (checkInput.isOutOfRange()) {
                         outputPrinter.println("Out of map.");
                     } else {
-                        X = checkInput.getInteger();
+                        x = checkInput.getInteger();
                     }
 
                 } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
@@ -264,20 +264,15 @@ public class RobotGame {
                     } else if (checkInput.isOutOfRange()) {
                         outputPrinter.println("Out of map.");
                     } else {
-                        Y = checkInput.getInteger();
+                        y = checkInput.getInteger();
                     }
 
                 } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
 
-                robots.get(i).place(X, Y, 1);
-
-                for (int find = 0; find < i; find++) { //if there is another robot with that position loaded
-                    if (robots.get(i).getX() == robots.get(find).getX() && robots.get(i).getY() == robots.get(find).getY()) {
-                        outputPrinter.println("There is already another robot.");
-                        alreadyUsed = true;
-                        break;
-                    }
-                } //end if there is another robot with that position loaded
+                if (robots.getRobotAt(x, y) != null) {
+                    outputPrinter.println("There is already another robot.");
+                    alreadyUsed = true;
+                }
 
             } while (alreadyUsed); //end get X and Y
 
@@ -307,7 +302,7 @@ public class RobotGame {
             } while (incorrect_direction); //end get direction
 
             String antiCheat = inputReader.nextLine();
-            robots.get(i).place(X, Y, direction); //despite robot was created after taking X and Y, it was done without direction (assigned north)
+            robots.get(i).place(x, y, direction); //despite robot was created after taking X and Y, it was done without direction (assigned north)
         }
     }
 
@@ -392,7 +387,7 @@ public class RobotGame {
         robot.changeAP(-1);
         displayMap = false;
 
-        if (robotInFront.getHP() > 0) { //check if not killed
+        if (robotInFront.isAlive()) { //check if not killed
             outputPrinter.println("Your robot hits " + robotInFront.getName() + " for " + robot.getAttack() + " HP");
             outputPrinter.println(robotInFront.getName() + "'s HP is " + robotInFront.getHP() + ". " + robot.getAP() + " AP left.");
         } else { //if killed

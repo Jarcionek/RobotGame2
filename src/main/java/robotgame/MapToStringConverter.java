@@ -22,7 +22,7 @@ public class MapToStringConverter {
         final char[][] chars = mapWithBonuses();
 
         for (Robot robot : robots) {
-            if (robot.getX() != 0 && robot.getY() != 0) {
+            if (robot.isOnMap()) {
                 chars[robot.getX()][robot.getY()] = MapToStringConverter.ROBOT_SYMBOL;
             }
         }
@@ -34,7 +34,7 @@ public class MapToStringConverter {
         final char[][] chars = mapWithBonuses();
 
         for (Robot robot : robots) {
-            if (robot.getHP() > 0) {
+            if (robot.isAlive()) {
                 chars[robot.getX()][robot.getY()] = (char) ('0' + robot.getId());
             }
         }
@@ -46,7 +46,7 @@ public class MapToStringConverter {
         final char[][] chars = mapWithBonuses();
 
         for (Robot robot : robots) {
-            if (robot.getX() != 0 && robot.getY() != 0) {
+            if (robot.isAlive()) {
                 chars[robot.getX()][robot.getY()] = MapToStringConverter.ROBOT_SYMBOL;
             }
         }

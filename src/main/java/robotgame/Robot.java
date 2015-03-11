@@ -11,9 +11,9 @@ public class Robot {
     private final int id;
     private final String name;
 
-    private int x = 0;
-    private int y = 0;
-    private int direction = 1; // 1 - up/north, 2 - right/east, 3 - down/south, 4 - left/west
+    private int x = -1;
+    private int y = -1;
+    private int direction = -1; // 1 - up/north, 2 - right/east, 3 - down/south, 4 - left/west
 
     private int endurance = 3;
     private int speed = 5;
@@ -114,6 +114,9 @@ public class Robot {
             hp = ENDURANCE_MULTIPLIER * endurance;
         } else if (hp < 0) {
             hp = 0;
+            x = -1;
+            y = -1;
+            direction = -1;
         }
     }
 
@@ -274,6 +277,14 @@ public class Robot {
      */
     public void changeSkillPoints(int addSkillPoints) {
         skillPoints += addSkillPoints;
+    }
+
+    public boolean isAlive() {
+        return hp > 0;
+    }
+
+    public boolean isOnMap() {
+        return x > 0 && y > 0;
     }
 
 }
