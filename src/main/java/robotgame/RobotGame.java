@@ -1,5 +1,6 @@
 package robotgame;
 
+import com.google.common.collect.ImmutableList;
 import robotgame.io.InputReader;
 import robotgame.io.OutputPrinter;
 import robotgame.io.PopUp;
@@ -53,6 +54,9 @@ public class RobotGame {
     private List<Robot> robots;
     private boolean unknownCommand = false; //used also as unreachable command
     private boolean displayMap = true;
+
+
+    private MapToStringConverter mapToStringConverter;
 
     //BONUSES
     private final WeightedList<Bonus> bonuses;
@@ -119,8 +123,8 @@ public class RobotGame {
         map = new RoboMap(mapWidth, mapHeight);
     }
 
-    private void getRobotsNames() {
-        robots = new ArrayList<>(numberOfPlayers);
+    private void createPlayers() {
+        List<Robot> list = new ArrayList<>(numberOfPlayers);
 
         for (int i = 1; i <= numberOfPlayers; i++) {
             String name;
@@ -131,7 +135,7 @@ public class RobotGame {
                 name = inputReader.next();
                 repeatedName = false;
 
-                for (Robot robot : robots) {
+                for (Robot robot : list) {
                     if (name.toLowerCase().equals(robot.getName().toLowerCase())) {
                         repeatedName = true;
                         outputPrinter.println("Another player has already chosen that name.");
@@ -141,12 +145,10 @@ public class RobotGame {
 
             } while (repeatedName);
 
-            robots.add(new Robot(name));
+            list.add(new Robot(name));
         }
-    }
 
-    private void randomizePlayersOrder() {
-        robots = listShuffler.shuffle(robots);
+        robots = ImmutableList.copyOf(listShuffler.shuffle(list));
     }
 
     private void allocateSkillPoints() {
@@ -237,7 +239,7 @@ public class RobotGame {
             do { //get X and Y
                 alreadyUsed = false; //postion already used by another player
 
-                outputPrinter.print(map.asString());
+                outputPrinter.print(mapToStringConverter.getMapAsString());
 
                 do {
                     outputPrinter.print("Enter " + robots.get(i).getName() + "'s X coordinate: ");
@@ -394,7 +396,7 @@ public class RobotGame {
                         robots.get(find).place(0, 0, 1); //remove from map
 
                         map.loadRobot(robot, RoboMap.ACTIVE_ROBOT_SYMBOL);
-                        outputPrinter.print(map.asString());
+                        outputPrinter.print(mapToStringConverter.getMapAsString());
                         map.loadRobot(robot, RoboMap.ROBOT_SYMBOL);
 
                         outputPrinter.print("Your robot kills " + robots.get(find).getName() + ". ");
@@ -444,7 +446,7 @@ public class RobotGame {
             map.loadRobot(robots.get(no), (char) no + 48); //0's code is 48
         }
 
-        outputPrinter.print(map.asString()); //prints map with robots represented as digits
+        outputPrinter.print(mapToStringConverter.getMapAsString()); //prints map with robots represented as digits
 
         for (int no = 0; no < numberOfPlayers; no++) { //representes all robots as inactives robots
             map.loadRobot(robots.get(no), RoboMap.ROBOT_SYMBOL);
@@ -496,8 +498,8 @@ public class RobotGame {
     public void start() {
         getNumberOfPlayers();
         getMapSize();
-        getRobotsNames();
-        randomizePlayersOrder();
+        createPlayers();
+        mapToStringConverter = new MapToStringConverter(map, robots);
         allocateSkillPoints();
         placeRobotsOnTheMap();
 
@@ -526,7 +528,7 @@ public class RobotGame {
                         if (!unknownCommand && displayMap) { //don't print map and information about position and AP left when unknown or unreachable command
                             map.loadRobot(robots.get(i), RoboMap.ACTIVE_ROBOT_SYMBOL);
 
-                            outputPrinter.print(map.asString());
+                            outputPrinter.print(mapToStringConverter.getMapAsString());
 
                             map.loadRobot(robots.get(i), RoboMap.ROBOT_SYMBOL);
 

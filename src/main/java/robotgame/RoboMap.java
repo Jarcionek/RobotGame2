@@ -46,17 +46,16 @@ public class RoboMap {
         }
     }
 
-    public String asString() {
-        String result = "";
+    public int getTotalWidth() {
+        return totalWidth;
+    }
 
-        for (int y = totalHeight - 1; y >= 0; y--) {
-            for (int x = 0; x <= totalWidth - 1; x++) {
-                result += map[x][y];
-            }
-            result += "\n";
-        }
+    public int getTotalHeight() {
+        return totalHeight;
+    }
 
-        return result;
+    public char[][] getMap() {
+        return map;
     }
 
     /**

@@ -2,17 +2,19 @@ package robotgame;
 
 import org.junit.Test;
 
+import java.util.Collections;
+
 import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
-public class RoboMapTest {
+public class MapToStringConverterTest {
 
     @Test
     public void convertsMapToString() {
-        RoboMap map = new RoboMap(3, 3);
+        MapToStringConverter mapToStringConverter = new MapToStringConverter(new RoboMap(3, 3), Collections.<Robot>emptyList());
 
-        assertThat(map.asString(), is(equalTo(
+        assertThat(mapToStringConverter.getMapAsString(), is(equalTo(
                 "+---+" + "\n" +
                 "|...|" + "\n" +
                 "|...|" + "\n" +
