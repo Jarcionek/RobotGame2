@@ -387,16 +387,30 @@ public class RobotGame {
     }
 
     /**
-     * Prints a map with robots represented as different digits, throw JOptionPane with stats of all robots
+     * Prints a map with robots represented as different digits and shows JOptionPane with stats of all robots
      */
     private void scan() {
         outputPrinter.print(mapToStringConverter.getMapAsStringWithRobotsIds());
 
-        PlayersInfo Information = new PlayersInfo(numberOfPlayers);
-        for (int player = 0; player < numberOfPlayers; player++) {
-            Information.load(player, robots.get(player));
+        String result = "";
+        for (Robot robot : robots) {
+
+            String line = robot.getId() + " - ";
+            if (robot.isAlive()) {
+                line += robot.getName() + ": ";
+                line += robot.getPositionAsString() + ", ";
+                line += robot.getHP() + " HP, ";
+            } else {
+                line += robot.getName() + ": DEAD ";
+            }
+            line += robot.getEndurance() + " endurance, ";
+            line += robot.getSpeed() + " speed, ";
+            line += robot.getAttack() + " attack.";
+
+            result += line + "\n";
         }
-        popUp.show(Information.print(), "Players' informations");
+
+        popUp.show(result, "Players' informations");
     }
 
     /**
