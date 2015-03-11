@@ -398,25 +398,13 @@ public class RobotGame {
             outputPrinter.print("Your robot kills " + robotInFront.getName() + ". ");
             popUp.show("Your robot kills " + robotInFront.getName() + "! ", "One less!");
 
-            int playersAlive = 0;
-            for (int k = 0; k < numberOfPlayers; k++) { //check how many players are still in game
-                if (robots.get(k).getHP() > 0) {
-                    playersAlive++;
-                }
-            } //end check how many players are still in game
-
-            if (playersAlive == 1) { //if there is only one player remaining
-                for (int k = 0; k < numberOfPlayers; k++) { //find that player's number
-                    if (robots.get(k).getHP() > 0) {
-                        outputPrinter.print("\n");
-                        popUp.show(robots.get(k).getName().toUpperCase() + " IS A WINNER!", "VICTORY");
-                        programTerminator.exit(); //finish game
-                    }
-                } //end find that player's number
-            } //end if there is only one player remaining
+            if (robots.getAliveRobots().size() == 1) {
+                outputPrinter.print("\n");
+                popUp.show(robots.getAliveRobots().get(0).getName().toUpperCase() + " IS A WINNER!", "VICTORY");
+                programTerminator.exit();
+            }
 
             outputPrinter.println(robot.getAP() + " AP left.");
-
         }
     }
 

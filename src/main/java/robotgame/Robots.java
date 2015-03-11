@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableList;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 public class Robots implements Iterable<Robot> {
 
     private final List<Robot> list;
@@ -24,6 +26,10 @@ public class Robots implements Iterable<Robot> {
             }
         }
         return null;
+    }
+
+    public List<Robot> getAliveRobots() {
+        return list.stream().filter(Robot::isAlive).collect(toList());
     }
 
     public Robot get(int index) {
