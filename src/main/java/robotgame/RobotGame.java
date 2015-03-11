@@ -391,8 +391,6 @@ public class RobotGame {
             outputPrinter.println("Your robot hits " + robotInFront.getName() + " for " + robot.getAttack() + " HP");
             outputPrinter.println(robotInFront.getName() + "'s HP is " + robotInFront.getHP() + ". " + robot.getAP() + " AP left.");
         } else { //if killed
-            robotInFront.place(0, 0, 1); //remove from map
-
             outputPrinter.print(mapToStringConverter.getMapAsStringWithHighlighted(robot));
 
             outputPrinter.print("Your robot kills " + robotInFront.getName() + ". ");

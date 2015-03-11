@@ -112,7 +112,7 @@ public class Robot {
         hp += addHP;
         if (hp > ENDURANCE_MULTIPLIER * endurance) {
             hp = ENDURANCE_MULTIPLIER * endurance;
-        } else if (hp < 0) {
+        } else if (hp <= 0) {
             hp = 0;
             x = -1;
             y = -1;
