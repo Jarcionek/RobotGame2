@@ -219,8 +219,8 @@ public class RobotGame {
             do {
                 x = bonusRandomNumberGenerator.nextInt(mapWidth) + 1;
                 y = bonusRandomNumberGenerator.nextInt(mapHeight) + 1;
-            } while (map.getBox(x, y) != RoboMap.EMPTY_FIELD_SYMBOL);
-            map.changeBox(x, y, RoboMap.BONUS_SYMBOL);
+            } while (!map.isEmpty(x, y));
+            map.addBonus(x, y);
             numberOfBonusesOnTheMap++;
             popUp.show("New bonus has appeared at (" + x + ";" + y + ")!", "New bonus!");
         }
@@ -427,7 +427,7 @@ public class RobotGame {
             outputPrinter.println("Are you sure that you want to attack and destroy that bonus?");
             String input = inputReader.next();
             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
-                map.changeBox(robot.getFrontX(), robot.getFrontY(), RoboMap.EMPTY_FIELD_SYMBOL);
+                map.destroyBonus(robot.getFrontX(), robot.getFrontY());
                 numberOfBonusesOnTheMap--;
                 robot.changeAP(-1);
             }

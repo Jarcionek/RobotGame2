@@ -82,26 +82,16 @@ public class RoboMap {
         }
     }
 
-    /**
-     * Changes symbol on the map in the given position.
-     *
-     * @param x         x coordinate
-     * @param y         y coordinate
-     * @param newSymbol new symbol given as a char
-     */
-    public void changeBox(int x, int y, char newSymbol) { //TODO Jarek: used only for placing/destroying bonus
-        map[x][y] = newSymbol;
+    public void addBonus(int x, int y) {
+        map[x][y] = BONUS_SYMBOL;
     }
 
-    /**
-     * Returns the symbol at given location.
-     *
-     * @param x x coordinate
-     * @param y y coordinate
-     * @return the symbol at given location
-     */
-    public char getBox(int x, int y) { //TODO Jarek: used only for checking if field is empty
-        return map[x][y];
+    public void destroyBonus(int x, int y) {
+        map[x][y] = EMPTY_FIELD_SYMBOL;
+    }
+
+    public boolean isEmpty(int x, int y) {
+        return map[x][y] == EMPTY_FIELD_SYMBOL;
     }
 
     /**
