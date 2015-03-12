@@ -67,7 +67,6 @@ public class RobotGame {
      * How many percent of all fields on the map have to be filled with bonuses to stop next bonus from appearing.
      */
     private static final int FULNESS = 10;
-    private int numberOfBonusesOnTheMap = 0;
 
     //LOAD DATA FROM USER
     private void getNumberOfPlayers() {
@@ -204,7 +203,7 @@ public class RobotGame {
      * @param chance percentile chance, if lower than 0 becomes 0, if higher than 100 becomes 100
      */
     private void randomizeBonus(int chance) {
-        if (FULNESS / 100.0 >= (double) numberOfBonusesOnTheMap / (mapWidth * mapHeight) && bonusRandomNumberGenerator.nextInt(100) < chance) {
+        if (FULNESS / 100.0 >= (double) map.getBonuses().size() / (mapWidth * mapHeight) && bonusRandomNumberGenerator.nextInt(100) < chance) {
             int x;
             int y;
             do {
@@ -212,7 +211,6 @@ public class RobotGame {
                 y = bonusRandomNumberGenerator.nextInt(mapHeight) + 1;
             } while (!map.isEmpty(x, y));
             map.addBonus(x, y);
-            numberOfBonusesOnTheMap++;
             popUp.show("New bonus has appeared at (" + x + ";" + y + ")!", "New bonus!");
         }
     }
@@ -298,7 +296,6 @@ public class RobotGame {
             robot.moveForward(1);
             robot.changeAP(-1);
             map.removeBonus(robot.getX(), robot.getY());
-            numberOfBonusesOnTheMap--;
 
             Bonus bonus = bonuses.getRandom();
             int amount = bonus.getDelta();
@@ -350,7 +347,6 @@ public class RobotGame {
             String input = inputReader.next();
             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
                 map.removeBonus(robot.getFrontX(), robot.getFrontY());
-                numberOfBonusesOnTheMap--;
                 robot.changeAP(-1);
             }
             return;
