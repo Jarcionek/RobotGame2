@@ -54,6 +54,7 @@ public class RobotGame {
 
 
     private MapToStringConverter mapToStringConverter;
+    private BonusRandomizer bonusRandomizer;
 
     //BONUSES
     private final WeightedList<Bonus> bonuses;
@@ -61,10 +62,6 @@ public class RobotGame {
      * Percentile chance that at the beginning of player's turn, the bonus will appear.
      */
     private static final int CHANCE = 30;
-    /**
-     * How many percent of all fields on the map have to be filled with bonuses to stop next bonus from appearing.
-     */
-    private static final int FULNESS = 10;
 
     //LOAD DATA FROM USER
     private void getNumberOfPlayers() {
@@ -193,22 +190,6 @@ public class RobotGame {
             robots.get(i).changeHP(ENDURANCE_MULTIPLIER * robots.get(i).getEndurance());
         }
         outputPrinter.println("===================================");
-    }
-
-    /**
-     * @param chance 0 to 100, both inclusive
-     */
-    private Coordinates randomizeBonus(int chance) {
-        if (FULNESS / 100.0 >= (double) map.getBonuses().size() / (map.getWidth() * map.getHeight()) && bonusRandomNumberGenerator.nextInt(100) < chance) {
-            int x;
-            int y;
-            do {
-                x = bonusRandomNumberGenerator.nextInt(map.getWidth()) + 1;
-                y = bonusRandomNumberGenerator.nextInt(map.getHeight()) + 1;
-            } while (!map.isEmpty(x, y));
-            return new Coordinates(x, y);
-        }
-        return null;
     }
 
     private void placeRobotsOnTheMap() {
@@ -446,6 +427,7 @@ public class RobotGame {
         mapToStringConverter = new MapToStringConverter(map, robots);
         allocateSkillPoints();
         placeRobotsOnTheMap();
+        bonusRandomizer = new BonusRandomizer(map, bonusRandomNumberGenerator);
 
         int round = 0;
         while (true) {
@@ -463,13 +445,12 @@ public class RobotGame {
 
                     Coordinates newBonus;
                     if (i == 0 && round == 1) {
-                        newBonus = randomizeBonus(100);
+                        newBonus = bonusRandomizer.randomizeBonus(100);
                     } else {
-                        newBonus = randomizeBonus(CHANCE);
+                        newBonus = bonusRandomizer.randomizeBonus(CHANCE);
                     }
 
                     if (newBonus != null) {
-                        map.addBonus(newBonus.x(), newBonus.y());
                         popUp.show("New bonus has appeared at (" + newBonus.x() + ";" + newBonus.y() + ")!", "New bonus!");
                     }
 
