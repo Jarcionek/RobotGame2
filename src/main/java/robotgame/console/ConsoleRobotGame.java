@@ -197,7 +197,7 @@ public class ConsoleRobotGame {
 
                 } while (incorrect_input);
             } while (robots.get(i).getSkillPoints() > 0);
-            String antiCheat = inputReader.nextLine(); //suppose that player one has 5 free skill points, write "e e e e e e" and press enter - six "e" would cause automatically adding one point of next player to his endurance
+            readRemainingLine();
             robots.get(i).changeHP(ENDURANCE_MULTIPLIER * robots.get(i).getEndurance());
         }
         outputPrinter.println("===================================");
@@ -207,13 +207,9 @@ public class ConsoleRobotGame {
         for (int i = 0; i < numberOfPlayers; i++) {
             int x = 0;
             int y = 0;
-            Direction direction = null;
-            boolean incorrect_direction = false;
-            boolean alreadyUsed = false;
+            Direction direction;
 
-            do { //get X and Y
-                alreadyUsed = false; //postion already used by another player
-
+            while (true) {
                 outputPrinter.print(mapToStringConverter.getMapAsString());
 
                 do {
@@ -248,26 +244,23 @@ public class ConsoleRobotGame {
 
                 if (robots.getRobotAt(x, y) != null) {
                     outputPrinter.println("There is already another robot.");
-                    alreadyUsed = true;
+                } else {
+                    break;
                 }
+            }
 
-            } while (alreadyUsed); //end get X and Y
-
-            do { //get direction
+            while (true) {
                 outputPrinter.print("Enter " + robots.get(i).getName() + "'s facing direction: ");
                 String input = inputReader.next().toLowerCase();
-                incorrect_direction = false;
-
                 try {
                     direction = Direction.valueOf(input.toUpperCase());
+                    break;
                 } catch (IllegalArgumentException ex) {
                     outputPrinter.println("Incorrect value. Your robot can only face north, east, south or west.");
-                    incorrect_direction = true;
                 }
+            }
 
-            } while (incorrect_direction); //end get direction
-
-            String antiCheat = inputReader.nextLine();
+            readRemainingLine();
             robots.get(i).place(x, y, direction);
         }
     }
@@ -394,7 +387,7 @@ public class ConsoleRobotGame {
             result += line + "\n";
         }
 
-        popUp.show(result, "Players' informations");
+        popUp.show(result, "Players' information");
     }
 
     /**
@@ -405,7 +398,7 @@ public class ConsoleRobotGame {
      */
     private String printHelp(Robot robot) {
         return robot.getName() + "'s statistics:\n" +
-                robot.getEndurance() + " endurance - denifes your maximum health points. Each point added to endurance increases your max HP by " + ENDURANCE_MULTIPLIER + " points.\n" +
+                robot.getEndurance() + " endurance - defines your maximum health points. Each point added to endurance increases your max HP by " + ENDURANCE_MULTIPLIER + " points.\n" +
                 robot.getSpeed() + " speed - defines your maximum action points in turn. Each point added to speed increases your max AP by 1 point. AP are automatically restored every round.\n" +
                 robot.getAttack() + " attack - defines how many HP you remove attacked enemy, Each point added to attack increases removing value by 1 point.\n" +
                 robot.getHP() + " HP - if you lose them all, you will be throw out from further game. You cannot have more HP than your endurance allows you to have.\n" +
@@ -505,10 +498,16 @@ public class ConsoleRobotGame {
                         } //END COMMANDS
 
                     } while (unknownCommand || robots.get(i).getAP() > 0);
-                    String antiCheat = inputReader.nextLine(); //suppose that player one has 5 AP, write "m m m m m m" and press enter - six move command would be automatically treat as next player move
+                    readRemainingLine();
 
                 } //end if player alive
             } //end player number
         }
     }
+
+    private void readRemainingLine() {
+        // suppose that player one has 5 AP, writes "m m m m m m" and presses enter - sixth move command would be understood as next player's move
+        inputReader.nextLine();
+    }
+
 }

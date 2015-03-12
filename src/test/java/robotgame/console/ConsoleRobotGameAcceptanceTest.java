@@ -1466,7 +1466,7 @@ public class ConsoleRobotGameAcceptanceTest {
                 "1 - Four: DEAD 3 endurance, 5 speed, 6 attack." + "\n" +
                 "2 - Three: DEAD 3 endurance, 5 speed, 6 attack." + "\n" +
                 "3 - Two: (5;5) faces north, 6 HP, 3 endurance, 5 speed, 6 attack." + "\n" +
-                "", "Players' informations");
+                "", "Players' information");
         inOrder.verify(outputPrinter).print("+----------+" + "\n" +
                 "|..........|" + "\n" +
                 "|..........|" + "\n" +
@@ -1793,7 +1793,7 @@ public class ConsoleRobotGameAcceptanceTest {
         inOrder.verify(outputPrinter).println("1 AP left.");
         inOrder.verify(inputReader).next(); // -> "help"
         inOrder.verify(popUp).show("First Robot's statistics:" + "\n" +
-                "3 endurance - denifes your maximum health points. Each point added to endurance increases your max HP by 2 points." + "\n" +
+                "3 endurance - defines your maximum health points. Each point added to endurance increases your max HP by 2 points." + "\n" +
                 "5 speed - defines your maximum action points in turn. Each point added to speed increases your max AP by 1 point. AP are automatically restored every round." + "\n" +
                 "6 attack - defines how many HP you remove attacked enemy, Each point added to attack increases removing value by 1 point." + "\n" +
                 "6 HP - if you lose them all, you will be throw out from further game. You cannot have more HP than your endurance allows you to have." + "\n" +
@@ -1849,7 +1849,7 @@ public class ConsoleRobotGameAcceptanceTest {
                 "");
         inOrder.verify(popUp).show("0 - First Robot: (1;2) faces north, 6 HP, 3 endurance, 5 speed, 6 attack." + "\n" +
                 "1 - Second Robot: (1;3) faces south, 8 HP, 4 endurance, 7 speed, 3 attack." + "\n" +
-                "", "Players' informations");
+                "", "Players' information");
         inOrder.verify(outputPrinter).print("+----------+" + "\n" +
                 "|..........|" + "\n" +
                 "|..........|" + "\n" +
