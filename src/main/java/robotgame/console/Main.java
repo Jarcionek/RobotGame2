@@ -1,10 +1,12 @@
-package robotgame.game;
+package robotgame.console;
 
-import robotgame.console.ConsoleRobotGame;
 import robotgame.console.io.InputReader;
 import robotgame.console.io.OutputPrinter;
 import robotgame.console.io.PopUp;
 import robotgame.console.io.ProgramTerminator;
+import robotgame.game.AvailableBonuses;
+import robotgame.game.ListShuffler;
+import robotgame.game.RandomNumberGenerator;
 
 public class Main {
 
