@@ -47,8 +47,6 @@ public class RobotGame {
     private DigitsChecker checkInput = new DigitsChecker();
     private static final int MAP_MAX_WIDTH = 75;
     private static final int MAP_MAX_HEIGHT = 25;
-    private int mapWidth = 0;
-    private int mapHeight = 0;
     private RoboMap map;
     private Robots robots;
     private boolean unknownCommand = false; //used also as unreachable command
@@ -87,6 +85,9 @@ public class RobotGame {
     }
 
     private void getMapSize() {
+        int mapWidth = -1;
+        int mapHeight = -1;
+
         do {
             outputPrinter.print("Enter map's width: ");
             String input = inputReader.next();
@@ -101,7 +102,6 @@ public class RobotGame {
             }
 
         } while (checkInput.containsNonDigits() || checkInput.isOutOfRange());
-
 
         do {
             outputPrinter.print("Enter map's height: ");
@@ -196,23 +196,19 @@ public class RobotGame {
     }
 
     /**
-     * Randomizes with given chance if bonus will appear in the moment of calling method.
-     * If randomized at non empty field, randomizing is repeated.
-     * Throws dialog window with coordinates of new bonus if appears.
-     *
-     * @param chance percentile chance, if lower than 0 becomes 0, if higher than 100 becomes 100
+     * @param chance 0 to 100, both inclusive
      */
-    private void randomizeBonus(int chance) {
-        if (FULNESS / 100.0 >= (double) map.getBonuses().size() / (mapWidth * mapHeight) && bonusRandomNumberGenerator.nextInt(100) < chance) {
+    private Coordinates randomizeBonus(int chance) {
+        if (FULNESS / 100.0 >= (double) map.getBonuses().size() / (map.getWidth() * map.getHeight()) && bonusRandomNumberGenerator.nextInt(100) < chance) {
             int x;
             int y;
             do {
-                x = bonusRandomNumberGenerator.nextInt(mapWidth) + 1;
-                y = bonusRandomNumberGenerator.nextInt(mapHeight) + 1;
+                x = bonusRandomNumberGenerator.nextInt(map.getWidth()) + 1;
+                y = bonusRandomNumberGenerator.nextInt(map.getHeight()) + 1;
             } while (!map.isEmpty(x, y));
-            map.addBonus(x, y);
-            popUp.show("New bonus has appeared at (" + x + ";" + y + ")!", "New bonus!");
+            return new Coordinates(x, y);
         }
+        return null;
     }
 
     private void placeRobotsOnTheMap() {
@@ -231,7 +227,7 @@ public class RobotGame {
                 do {
                     outputPrinter.print("Enter " + robots.get(i).getName() + "'s X coordinate: ");
                     String input = inputReader.next();
-                    checkInput.load(input, 1, mapWidth);
+                    checkInput.load(input, 1, map.getWidth());
 
                     if (checkInput.containsNonDigits()) {
                         outputPrinter.println("Incorrect value. Only digits are allowed.");
@@ -246,7 +242,7 @@ public class RobotGame {
                 do {
                     outputPrinter.print("Enter " + robots.get(i).getName() + "'s Y coordinate: ");
                     String input = inputReader.next();
-                    checkInput.load(input, 1, mapHeight);
+                    checkInput.load(input, 1, map.getHeight());
 
                     if (checkInput.containsNonDigits()) {
                         outputPrinter.println("Incorrect value. Only digits are allowed.");
@@ -465,10 +461,16 @@ public class RobotGame {
 
                     popUp.show(robots.get(i).getName() + "'s turn.", "Turn");
 
+                    Coordinates newBonus;
                     if (i == 0 && round == 1) {
-                        randomizeBonus(100);
+                        newBonus = randomizeBonus(100);
                     } else {
-                        randomizeBonus(CHANCE);
+                        newBonus = randomizeBonus(CHANCE);
+                    }
+
+                    if (newBonus != null) {
+                        map.addBonus(newBonus.x(), newBonus.y());
+                        popUp.show("New bonus has appeared at (" + newBonus.x() + ";" + newBonus.y() + ")!", "New bonus!");
                     }
 
                     do {
